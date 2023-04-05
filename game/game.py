@@ -3,9 +3,9 @@
 """
 import game.key_actions as actions
 from utils.logger import Logger
-from input_handler import InputHandler
-from renderer import Renderer
-from font import Font
+from backend.input_handler import InputHandler
+from backend.renderer import Renderer
+from backend.font import Font
 import utils.json_handler as json_handler
 
 

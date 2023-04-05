@@ -3,8 +3,8 @@
 """
 
 from utils.logger import Logger
-from renderer import Renderer
-from input_handler import InputHandler
+from backend.renderer import Renderer
+from backend.input_handler import InputHandler
 from game.game import Game
 
 
