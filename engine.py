@@ -16,7 +16,7 @@ class CrtEngine:
 
     def __init__(self) -> None:
         self.name = 'CRT Game Engine'
-        self.version = '0.0.1'
+        self.version = '0.0.1-alpha'
         self.logger = Logger('main-engine')
         self.logger.debug('Starting program')
         self.logger.debug('Loading resources...')
@@ -37,6 +37,8 @@ class CrtEngine:
             if not self.input_handler.event_handler():
                 self.renderer.end()
                 break
+            if self.game.state == 'title screen':
+                self.game.title_screen()
             if self.game.state == 'running':
                 self.game.run()
             if self.game.state == 'paused':
@@ -57,7 +59,7 @@ class CrtEngine:
             self.logger.debug('Start Loading Game...')
             if self.game.load():
                 self.logger.debug('Finished Loading Game...')
-                self.game.state = 'running'
+                self.game.state = 'title screen'
                 self.run()
             else:
                 self.logger.debug('Unable to load Engine')

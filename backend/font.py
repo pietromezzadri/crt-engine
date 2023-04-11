@@ -9,3 +9,9 @@ class Font:
 
     def create_font(self, key, path, size):
         self.fonts[key] = pygame.font.Font(path, size)
+
+    def get_default_font(self):
+        return pygame.font.get_default_font()
+
+    def get_font_list(self):
+        return pygame.font.get_fonts()

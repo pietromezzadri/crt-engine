@@ -40,7 +40,7 @@ class Logger:
         logging.root.handlers = []
         logging.basicConfig(
             level=logging.DEBUG,
-            format=f"{MAGENTA}{self.name}{RESET} | {BLUE_BG}[%(levelname)s]{RESET} {YELLOW}%(message)s{RESET} %(asctime)s",
+            format=f"{MAGENTA}{self.name:<15}{RESET} {BLUE_BG}[%(levelname)s]{RESET} {'':<3} {YELLOW}%(message)s{RESET} %(asctime)s",
             handlers=[
                 logging.FileHandler("logs/debug.log"),
                 logging.StreamHandler()
@@ -55,7 +55,7 @@ class Logger:
         logging.root.handlers = []
         logging.basicConfig(
             level=logging.INFO,
-            format=f"{MAGENTA}{self.name}{RESET} | {GREY_BG}[%(levelname)s]{RESET} {YELLOW}%(message)s{RESET} %(asctime)s",
+            format=f"{MAGENTA}{self.name:<15}{RESET} {GREY_BG}[%(levelname)s]{RESET} {'':<3} {YELLOW}%(message)s{RESET} %(asctime)s",
             handlers=[
                 logging.FileHandler("logs/debug.log"),
                 logging.StreamHandler()
@@ -70,7 +70,7 @@ class Logger:
         logging.root.handlers = []
         logging.basicConfig(
             level=logging.WARNING,
-            format=f"{MAGENTA}{self.name}{RESET} | {YELLOW_BG}[%(levelname)s]{RESET} {YELLOW}%(message)s{RESET} %(asctime)s",
+            format=f"{MAGENTA}{self.name:<15}{RESET} {YELLOW_BG}[%(levelname)s]{RESET} {'':<3} {YELLOW}%(message)s{RESET} %(asctime)s",
             handlers=[
                 logging.FileHandler("logs/debug.log"),
                 logging.StreamHandler()
@@ -85,7 +85,7 @@ class Logger:
         logging.root.handlers = []
         logging.basicConfig(
             level=logging.ERROR,
-            format=f"{MAGENTA}{self.name}{RESET} | {RED_BG}[%(levelname)s]{RESET} {YELLOW}%(message)s{RESET} %(asctime)s",
+            format=f"{MAGENTA}{self.name:<15}{RESET} {RED_BG}[%(levelname)s]{RESET} {'':<3} {YELLOW}%(message)s{RESET} %(asctime)s",
             handlers=[
                 logging.FileHandler("logs/debug.log"),
                 logging.StreamHandler()
