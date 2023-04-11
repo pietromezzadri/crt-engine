@@ -7,6 +7,7 @@ from utils.logger import Logger
 from backend.input_handler import InputHandler
 from backend.renderer import Renderer
 from backend.font import Font
+from game.components.core.menu import Menu
 import utils.json_handler as json_handler
 import time
 
@@ -25,6 +26,7 @@ class Game:
         self.renderer: Renderer = renderer
         self.font = Font(30)
         self.selected = 0
+        self.components = {}
 
     def load(self) -> int:
         """ 
@@ -33,6 +35,10 @@ class Game:
         self.logger.debug('loading fonts')
         self.load_fonts()
         self.logger.debug('finished loading fonts')
+        self.logger.debug('loading components')
+        self.load_components()
+        self.logger.debug('finished loading components')
+
         return 1
 
     def run(self):
@@ -74,66 +80,20 @@ class Game:
             Game Title Screen
         """
         if actions.MAIN_GAME['PAUSE'] in self.input_handler.keys_pressed:
-            self.state = 'end'
-            self.input_handler.keys_pressed.remove(
-                actions.MAIN_GAME['PAUSE'])
-
-        if actions.MAIN_GAME['DOWN'] in self.input_handler.keys_pressed:
-            self.selected += 1
-            if self.selected >= 3:
-                self.selected = 0
-            self.input_handler.keys_pressed.remove(
-                actions.MAIN_GAME['DOWN'])
-
-        if actions.MAIN_GAME['UP'] in self.input_handler.keys_pressed:
-            self.selected -= 1
-            if self.selected < 0:
-                self.selected = 2
-            self.input_handler.keys_pressed.remove(
-                actions.MAIN_GAME['UP'])
-
-        if actions.MAIN_GAME['RIGHT'] in self.input_handler.keys_pressed:
-            if self.selected == 1:
-                self.renderer.update_screen_size(1280, 720)
-                self.input_handler.keys_pressed.remove(
-                    actions.MAIN_GAME['RIGHT'])
-
-        if actions.MAIN_GAME['LEFT'] in self.input_handler.keys_pressed:
-            if self.selected == 1:
-                self.renderer.update_screen_size(800, 600)
-                self.input_handler.keys_pressed.remove(
-                    actions.MAIN_GAME['LEFT'])
-
-        if actions.MAIN_GAME['ENTER'] in self.input_handler.keys_pressed:
-            if self.selected == 0:
-                self.state = 'running'
-                self.input_handler.keys_pressed.remove(
-                    actions.MAIN_GAME['ENTER'])
-            elif self.selected == 2:
+            if self.components['menu'].state == 'run':
                 self.state = 'end'
                 self.input_handler.keys_pressed.remove(
-                    actions.MAIN_GAME['ENTER'])
-        self.renderer.clear_screen((0, 0, 0))
-        menu = ['START GAME', 'OPTIONS', 'QUIT GAME']
-        if self.selected == 1:
-            self.options()
-            return
-        for index, text in enumerate(menu):
-            color = (0, 255, 0)
-            if index == self.selected:
-                color = (255, 255, 0)
+                    actions.MAIN_GAME['PAUSE'])
 
-            text_obj = self.font.fonts['main'].render(text, 4, color)
-            self.renderer.screen.blit(text_obj, (300, 100 + 50*index))
+        if self.components['menu'].state == 'run':
+            self.components['menu'].run()
+            self.state = self.components['menu'].game_state
+        elif self.components['menu'].state == 'options':
+            self.components['menu'].options()
 
-    def options(self):
-        """
-            Options screen
-        """
-        menu_text = f'Current Resolution - [{self.renderer.width}]x[{self.renderer.height}]'
-        text_obj = self.font.fonts['main'].render(menu_text, 4, (255, 255, 0))
-        self.renderer.clear_screen((0, 0, 0))
-        self.renderer.screen.blit(text_obj, (100, 150))
+    def load_components(self):
+        self.components['menu'] = Menu(300, 200, ['START', 'OPTIONS', 'QUIT'],
+                                       self.renderer, self.input_handler, self.font, 'title screen')
 
     def load_fonts(self):
         """
