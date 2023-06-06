@@ -33,21 +33,10 @@ class Menu:
             self.input_handler.keys_pressed.remove(
                 actions.MAIN_GAME['UP'])
 
-        if actions.MAIN_GAME['RIGHT'] in self.input_handler.keys_pressed:
-            if self.selected == 1:
-                self.renderer.update_screen_size(1280, 720)
-                self.input_handler.keys_pressed.remove(
-                    actions.MAIN_GAME['RIGHT'])
-
-        if actions.MAIN_GAME['LEFT'] in self.input_handler.keys_pressed:
-            if self.selected == 1:
-                self.renderer.update_screen_size(800, 600)
-                self.input_handler.keys_pressed.remove(
-                    actions.MAIN_GAME['LEFT'])
-
         if actions.MAIN_GAME['ENTER'] in self.input_handler.keys_pressed:
             if self.selected == 0:
                 self.game_state = 'running'
+                self.state = 'run'
 
             if self.selected == 1:
                 self.state = 'options'
@@ -76,6 +65,12 @@ class Menu:
             self.state = 'run'
             self.input_handler.keys_pressed.remove(
                 actions.MAIN_GAME['PAUSE'])
+
+        if actions.MAIN_GAME['RIGHT'] in self.input_handler.keys_pressed:
+            self.renderer.update_screen_size(1280, 720)
+        if actions.MAIN_GAME['LEFT'] in self.input_handler.keys_pressed:
+            self.renderer.update_screen_size(800, 600)
+
         menu_text = f'Current Resolution - [{self.renderer.width}]x[{self.renderer.height}]'
         text_obj = self.font.fonts['main'].render(menu_text, 4, (255, 255, 0))
         self.renderer.clear_screen((0, 0, 0))

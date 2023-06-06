@@ -1,5 +1,5 @@
-""" 
-    Game 
+"""
+    Game
 """
 import datetime
 import game.key_actions as actions
@@ -29,7 +29,7 @@ class Game:
         self.components = {}
 
     def load(self) -> int:
-        """ 
+        """
             Game Load function
         """
         self.logger.debug('loading fonts')
@@ -42,7 +42,7 @@ class Game:
         return 1
 
     def run(self):
-        """ 
+        """
             Game Run function
         """
         if actions.MAIN_GAME['PAUSE'] in self.input_handler.keys_pressed:
@@ -61,16 +61,22 @@ class Game:
         self.renderer.screen.blit(font_text, (50, 100))
 
     def pause(self):
-        """ 
+        """
             Game Pause function
         """
+
+        self.renderer.clear_screen((0, 0, 0))
+        if self.components['menu'].state == 'run':
+            self.components['menu'].run()
+        elif self.components['menu'].state == 'options':
+            self.components['menu'].options()
+
         if actions.MAIN_GAME['PAUSE'] in self.input_handler.keys_pressed:
             if self.state == 'paused':
                 self.state = 'running'
                 self.logger.info('Game is Running')
                 self.input_handler.keys_pressed.remove(
                     actions.MAIN_GAME['PAUSE'])
-        self.renderer.clear_screen((0, 0, 0))
         game_text = self.font.fonts['main'].render(
             f'Game is paused {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}', 4, (0, 255, 0))
         self.renderer.screen.blit(game_text, (50, 50))
