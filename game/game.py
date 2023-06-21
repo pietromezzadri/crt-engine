@@ -21,7 +21,7 @@ class Game:
         self.logger = Logger('game')
         self.name = 'Game Test'
         self.version = '0.0.1-alpha'
-        self.state = 'stopped'
+        self.state = 'title screen'
         self.input_handler: InputHandler = input_handler
         self.renderer: Renderer = renderer
         self.font = Font(30)
@@ -47,6 +47,7 @@ class Game:
         """
         if actions.MAIN_GAME['PAUSE'] in self.input_handler.keys_pressed:
             self.state = 'paused'
+            self.components['menu'].state = 'run'
             self.logger.info('Game is Paused')
             self.input_handler.keys_pressed.remove(
                 actions.MAIN_GAME['PAUSE'])
@@ -70,6 +71,8 @@ class Game:
             self.components['menu'].run()
         elif self.components['menu'].state == 'options':
             self.components['menu'].options()
+        elif self.components['menu'].state == 'end':
+            self.state = self.components['menu'].game_state
 
         if actions.MAIN_GAME['PAUSE'] in self.input_handler.keys_pressed:
             if self.state == 'paused':
@@ -77,6 +80,7 @@ class Game:
                 self.logger.info('Game is Running')
                 self.input_handler.keys_pressed.remove(
                     actions.MAIN_GAME['PAUSE'])
+
         game_text = self.font.fonts['main'].render(
             f'Game is paused {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}', 4, (0, 255, 0))
         self.renderer.screen.blit(game_text, (50, 50))
@@ -99,7 +103,7 @@ class Game:
 
     def load_components(self):
         self.components['menu'] = Menu(300, 200, ['START', 'OPTIONS', 'QUIT'],
-                                       self.renderer, self.input_handler, self.font, 'title screen')
+                                       self.renderer, self.input_handler, self.font, self.state)
 
     def load_fonts(self):
         """
