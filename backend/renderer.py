@@ -31,6 +31,15 @@ class Renderer:
         """
         pygame.display.flip()
 
+    def draw_line(self, color, start, end):
+        pygame.draw.line(self.screen, color, start, end, width=3)
+
+    def get_surface(self, width, height):
+        """
+            Returns a surface
+        """
+        return pygame.Surface((width, height))
+
     def update_screen_size(self, width, height):
         """
             Renderer Screen Size function
