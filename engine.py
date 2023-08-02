@@ -5,6 +5,7 @@
 from utils.logger import Logger
 from backend.renderer import Renderer
 from backend.input_handler import InputHandler
+from backend.clock import Clock
 from game.game import Game
 
 
@@ -23,7 +24,8 @@ class CrtEngine:
         self.state = 'loading'
         self.renderer = Renderer(f'{self.name} - v.{self.version}')
         self.input_handler = InputHandler()
-        self.game = Game(self.renderer, self.input_handler)
+        self.clock = Clock()
+        self.game = Game(self.renderer, self.input_handler, self.clock)
         self.logger.debug('Finished Loading!')
         self.state = 'running'
         self.fullscreen = False
