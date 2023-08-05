@@ -3,15 +3,16 @@
 """
 import datetime
 import time
+
 import game.key_actions as actions
-from utils.logger import Logger
+import utils.json_handler as json_handler
+from backend.clock import Clock
+from backend.font import Font
 from backend.input_handler import InputHandler
 from backend.renderer import Renderer
-from backend.font import Font
-from backend.clock import Clock
 from game.components.core.menu import Menu
-from game.entities.base_entity import BaseEntity
-import utils.json_handler as json_handler
+from game.entities.character import Character
+from utils.logger import Logger
 
 
 class Game:
@@ -64,26 +65,36 @@ class Game:
         if actions.MAIN_GAME['DOWN'] in self.input_handler.keys_pressed:
             self.components['entity'].update([0, 1], self.clock.delta_time())
 
+        if self.input_handler.mouse.m_left:
+            self.components['entity'].move = True
+            self.components['entity'].paths.append((self.input_handler.mouse.get_x(), \
+                                                   self.input_handler.mouse.get_y()))
+        
+        if self.components['entity'].move:
+            self.components['entity'].move_to_point(self.clock.delta_time())
+
         # GAME LOOP
         self.renderer.clear_screen((0, 0, 0))
-        game_text = self.font.fonts['main'].render(
-            f'Game is running {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
-            4, (255, 0, 0))
-        font_text = self.font.fonts['main'].render(
-            f'Fonts: {self.font.get_font_list()}', 4, (255, 0, 0))
-        self.renderer.screen.blit(game_text, (50, 50))
-        self.renderer.screen.blit(font_text, (50, 100))
         self.components['entity'].blit(self.renderer.screen)
-        self.renderer.draw_line(
-            (0, 255, 0), (self.components['entity'].x,
-                          self.components['entity'].y),
-            (self.input_handler.mouse.get_pos()))
+        if len(self.components['entity'].paths):
+            self.renderer.draw_line(
+                (0, 255, 0), (self.components['entity'].x,
+                            self.components['entity'].y),
+                (self.components['entity'].paths[0]))
+        
+        
+        if len(self.components['entity'].paths):
+            for path in self.components['entity'].paths:
+                marker = self.renderer.get_surface(20, 20)
+                marker.fill((0, 200, 20))
+                self.renderer.screen.blit(marker, (path[0], path[1]))
+
         self.clock.update()
         end_time = time.time() - start_time
         true_fps = 1. / end_time
         fps_text = self.font.fonts['main'].render(
-            f'Fonts: {int(true_fps)}', 4, (255, 0, 0))
-        self.renderer.screen.blit(fps_text, (50, 300))
+            f'FPS: {int(true_fps)}', 4, (255, 0, 0))
+        self.renderer.screen.blit(fps_text, (50, 100))
 
     def pause(self):
         """
@@ -128,12 +139,12 @@ class Game:
 
     def load_components(self):
         """
-            Game Pause Screen
+            Load components
         """
         self.components['menu']: Menu = Menu(300, 200, ['START', 'OPTIONS', 'QUIT'],
                                              self.renderer, self.input_handler,
                                              self.font, self.state)
-        self.components['entity']: BaseEntity = BaseEntity(
+        self.components['entity']: Character = Character(
             '1', 'test', 50, 50, self.renderer.get_surface(50, 50))
         self.components['entity'].image.fill((0, 0, 255))
 
