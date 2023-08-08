@@ -18,9 +18,12 @@ class BaseEntity:
         surface.blit(self.image, (self.x, self.y))
 
     def move(self, directions, delta_time):
-        if self.can_move:
+        if not self.can_move:
             self.x += self.x_speed * directions[0] * delta_time
             self.y += self.y_speed * directions[1] * delta_time
+        else:
+            self.paths = []
+            self.can_move = False
 
     def move_to_point(self, delta_time):
         if len(self.paths):

@@ -15,4 +15,5 @@ MAIN_GAME = {
     'a': constants.K_a,
     's': constants.K_s,
     'd': constants.K_d,
+    'c': constants.K_c,
 }
