@@ -5,7 +5,7 @@ from backend.font import Font
 
 
 class Menu:
-    def __init__(self, width, height, menu_items, \
+    def __init__(self, width, height, menu_items,
                  renderer, input_handler, font, game_state):
         self._id = 0
         self.width = width
@@ -34,8 +34,9 @@ class Menu:
                 actions.MAIN_GAME['UP'])
 
         if actions.MAIN_GAME['ENTER'] in self.input_handler.keys_pressed \
-                                      or self.input_handler.mouse.m_left:
+                or self.input_handler.mouse.m_left:
             if self.selected == 0:
+                self.input_handler.mouse.m_left = False
                 self.game_state = 'running'
                 self.state = 'end'
 
@@ -93,7 +94,7 @@ class Menu:
             self.renderer.update_screen_size(800, 600)
 
         menu_text = f'Current Resolution - [{self.renderer.width}]' + \
-                                        f'x[{self.renderer.height}]'
+            f'x[{self.renderer.height}]'
         text_obj = self.font.fonts['main'].render(menu_text, 4, (255, 255, 0))
         self.renderer.clear_screen((0, 0, 0))
         screen_middle = int(self.renderer.width / 2)

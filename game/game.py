@@ -3,16 +3,16 @@
 """
 import datetime
 import time
-
-import game.key_actions as actions
+from game.entities.box import Box
+from game.entities.character import Character
+from game.components.core.menu import Menu
 import utils.json_handler as json_handler
-from backend.clock import Clock
-from backend.font import Font
+from utils.logger import Logger
+import game.key_actions as actions
 from backend.input_handler import InputHandler
 from backend.renderer import Renderer
-from game.components.core.menu import Menu
-from game.entities.character import Character
-from utils.logger import Logger
+from backend.font import Font
+from backend.clock import Clock
 
 
 class Game:
@@ -25,8 +25,10 @@ class Game:
         self.name = 'Game Test'
         self.version = '0.0.1-alpha'
         self.state = 'title screen'
+        self.state = 'title screen'
         self.input_handler: InputHandler = input_handler
         self.renderer: Renderer = renderer
+        self.clock: Clock = clock
         self.clock: Clock = clock
         self.font = Font(30)
         self.selected = 0
@@ -50,48 +52,34 @@ class Game:
             Game Run function
         """
         start_time = time.time()
+        start_time = time.time()
         if actions.MAIN_GAME['PAUSE'] in self.input_handler.keys_pressed:
             self.state = 'paused'
+            self.components['menu'].state = 'run'
             self.components['menu'].state = 'run'
             self.logger.info('Game is Paused')
             self.input_handler.keys_pressed.remove(
                 actions.MAIN_GAME['PAUSE'])
-        if actions.MAIN_GAME['RIGHT'] in self.input_handler.keys_pressed:
-            self.components['entity'].update([1, 0], self.clock.delta_time())
-        if actions.MAIN_GAME['LEFT'] in self.input_handler.keys_pressed:
-            self.components['entity'].update([-1, 0], self.clock.delta_time())
-        if actions.MAIN_GAME['UP'] in self.input_handler.keys_pressed:
-            self.components['entity'].update([0, -1], self.clock.delta_time())
-        if actions.MAIN_GAME['DOWN'] in self.input_handler.keys_pressed:
-            self.components['entity'].update([0, 1], self.clock.delta_time())
 
-        if self.input_handler.mouse.m_left:
-            self.components['entity'].move = True
-            self.components['entity'].paths.append((self.input_handler.mouse.get_x(), \
-                                                   self.input_handler.mouse.get_y()))
-        
-        if self.components['entity'].move:
-            self.components['entity'].move_to_point(self.clock.delta_time())
+        self.components['character'].update(self.clock.delta_time())
 
         # GAME LOOP
         self.renderer.clear_screen((0, 0, 0))
-        self.components['entity'].blit(self.renderer.screen)
-        if len(self.components['entity'].paths):
+        self.components['character'].blit(self.renderer.screen)
+        self.components['box'].blit(self.renderer.screen)
+        if len(self.components['character'].paths):
             self.renderer.draw_line(
-                (0, 255, 0), (self.components['entity'].x,
-                            self.components['entity'].y),
-                (self.components['entity'].paths[0]))
-        
-        
-        if len(self.components['entity'].paths):
-            for path in self.components['entity'].paths:
+                (0, 255, 0), (self.components['character'].x,
+                              self.components['character'].y),
+                (self.components['character'].paths[0]))
+            for path in self.components['character'].paths:
                 marker = self.renderer.get_surface(20, 20)
                 marker.fill((0, 200, 20))
                 self.renderer.screen.blit(marker, (path[0], path[1]))
 
         self.clock.update()
         end_time = time.time() - start_time
-        true_fps = 1. / end_time
+        true_fps = 1. / (end_time or 1)
         fps_text = self.font.fonts['main'].render(
             f'FPS: {int(true_fps)}', 4, (255, 0, 0))
         self.renderer.screen.blit(fps_text, (50, 100))
@@ -144,9 +132,16 @@ class Game:
         self.components['menu']: Menu = Menu(300, 200, ['START', 'OPTIONS', 'QUIT'],
                                              self.renderer, self.input_handler,
                                              self.font, self.state)
-        self.components['entity']: Character = Character(
-            '1', 'test', 50, 50, self.renderer.get_surface(50, 50))
-        self.components['entity'].image.fill((0, 0, 255))
+        self.components['character']: Character = Character(
+            '1', 'test', 50, 50, self.renderer.get_surface(50, 50),
+            self.input_handler)
+        self.components['character'].image.fill((0, 0, 255))
+        self.components['box']: Box = Box(
+            '2', 'box', 20, 20, self.renderer.get_surface(20, 20),
+            self.input_handler)
+        self.components['box'].image.fill((0, 20, 180))
+        self.components['box'].x = 300
+        self.components['box'].y = 300
 
     def load_fonts(self):
         """
@@ -167,6 +162,6 @@ class Game:
             self.renderer.update()
 
     def end(self):
-        """ 
+        """
             Game End function
         """
