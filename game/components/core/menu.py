@@ -36,9 +36,9 @@ class Menu:
         if actions.MAIN_GAME['ENTER'] in self.input_handler.keys_pressed \
                 or self.input_handler.mouse.m_left:
             if self.selected == 0:
+                self.input_handler.mouse.m_left = False
                 self.game_state = 'running'
                 self.state = 'end'
-                self.input_handler.mouse.m_left = False
 
             if self.selected == 1:
                 self.state = 'options'
