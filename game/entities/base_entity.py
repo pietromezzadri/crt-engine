@@ -1,6 +1,6 @@
 class BaseEntity:
 
-    def __init__(self, _id, name, width, height, image):
+    def __init__(self, _id, name, width, height, image, input_handler):
         self._id = _id
         self.name = name
         self.x = 0
@@ -10,12 +10,36 @@ class BaseEntity:
         self.width = width
         self.height = height
         self.image = image
-        self.move = True
+        self.input_handler = input_handler
+        self.can_move = True
+        self.paths = []
 
     def blit(self, surface):
         surface.blit(self.image, (self.x, self.y))
 
-    def update(self, directions, delta_time):
-        if self.move:
-            self.x += self.x_speed * directions[0] * delta_time
-            self.y += self.y_speed * directions[1] * delta_time
+    def move(self, directions, delta_time):
+        self.x += self.x_speed * directions[0] * delta_time
+        self.y += self.y_speed * directions[1] * delta_time
+
+    def move_to_point(self, delta_time):
+        if len(self.paths) > 0:
+            dist_x = self.x - self.paths[0][0]
+            dist_y = self.y - self.paths[0][1]
+            if abs(dist_x) > 10:
+                vel_x = self.x_speed * \
+                    abs(dist_x / dist_y) * -(dist_x/abs(dist_x))
+                if abs(vel_x) > self.x_speed:
+                    self.x += self.x_speed * vel_x / abs(vel_x) * delta_time
+                else:
+                    self.x += vel_x * delta_time
+            if abs(dist_y) > 10:
+                vel_y = self.y_speed * \
+                    abs(dist_y / dist_x) * -(dist_y/abs(dist_y))
+                if abs(vel_y) > self.y_speed:
+                    self.y += self.y_speed * vel_y / abs(vel_y) * delta_time
+                else:
+                    self.y += vel_y * delta_time
+            if abs(dist_x) < 10 and abs(dist_y) < 10:
+                self.paths.pop(0)
+                if len(self.paths) == 0:
+                    self.can_move = False

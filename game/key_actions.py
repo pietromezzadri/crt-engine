@@ -11,4 +11,8 @@ MAIN_GAME = {
     'RIGHT': constants.K_RIGHT,
     'LEFT': constants.K_LEFT,
     'ENTER': constants.K_RETURN,
+    'w': constants.K_w,
+    'a': constants.K_a,
+    's': constants.K_s,
+    'd': constants.K_d,
 }

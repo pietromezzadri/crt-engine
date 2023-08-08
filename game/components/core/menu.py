@@ -1,12 +1,12 @@
 import game.key_actions as actions
-from utils.logger import Logger
 from backend.input_handler import InputHandler
 from backend.renderer import Renderer
 from backend.font import Font
 
 
 class Menu:
-    def __init__(self, width, height, menu_items, renderer, input_handler, font, game_state):
+    def __init__(self, width, height, menu_items,
+                 renderer, input_handler, font, game_state):
         self._id = 0
         self.width = width
         self.height = height
@@ -33,10 +33,12 @@ class Menu:
             self.input_handler.keys_pressed.remove(
                 actions.MAIN_GAME['UP'])
 
-        if actions.MAIN_GAME['ENTER'] in self.input_handler.keys_pressed or self.input_handler.mouse.m_left:
+        if actions.MAIN_GAME['ENTER'] in self.input_handler.keys_pressed \
+                or self.input_handler.mouse.m_left:
             if self.selected == 0:
                 self.game_state = 'running'
                 self.state = 'end'
+                self.input_handler.mouse.m_left = False
 
             if self.selected == 1:
                 self.state = 'options'
@@ -91,7 +93,8 @@ class Menu:
         if actions.MAIN_GAME['LEFT'] in self.input_handler.keys_pressed:
             self.renderer.update_screen_size(800, 600)
 
-        menu_text = f'Current Resolution - [{self.renderer.width}]x[{self.renderer.height}]'
+        menu_text = f'Current Resolution - [{self.renderer.width}]' + \
+            f'x[{self.renderer.height}]'
         text_obj = self.font.fonts['main'].render(menu_text, 4, (255, 255, 0))
         self.renderer.clear_screen((0, 0, 0))
         screen_middle = int(self.renderer.width / 2)
