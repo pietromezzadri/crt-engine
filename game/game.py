@@ -7,8 +7,8 @@ from game.entities.box import Box
 from game.entities.character import Character
 from game.components.core.menu import Menu
 import utils.json_handler as json_handler
-import game.key_actions as actions
 from utils.logger import Logger
+import game.key_actions as actions
 from backend.input_handler import InputHandler
 from backend.renderer import Renderer
 from backend.font import Font
@@ -81,8 +81,8 @@ class Game:
         end_time = time.time() - start_time
         true_fps = 1. / (end_time or 1)
         fps_text = self.font.fonts['main'].render(
-            f'Fonts: {int(true_fps)}', 4, (255, 0, 0))
-        self.renderer.screen.blit(fps_text, (50, 300))
+            f'FPS: {int(true_fps)}', 4, (255, 0, 0))
+        self.renderer.screen.blit(fps_text, (50, 100))
 
     def pause(self):
         """
@@ -127,7 +127,7 @@ class Game:
 
     def load_components(self):
         """
-            Game Pause Screen
+            Load components
         """
         self.components['menu']: Menu = Menu(300, 200, ['START', 'OPTIONS', 'QUIT'],
                                              self.renderer, self.input_handler,

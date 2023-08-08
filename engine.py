@@ -2,11 +2,11 @@
     CRT Egnine Class 
 """
 
-from utils.logger import Logger
-from backend.renderer import Renderer
-from backend.input_handler import InputHandler
 from backend.clock import Clock
+from backend.input_handler import InputHandler
+from backend.renderer import Renderer
 from game.game import Game
+from utils.logger import Logger
 
 
 class CrtEngine:
@@ -17,7 +17,7 @@ class CrtEngine:
 
     def __init__(self) -> None:
         self.name = 'CRT Game Engine'
-        self.version = '0.0.1-alpha'
+        self.version = '0.0.1_pre-alpha'
         self.logger = Logger('main-engine')
         self.logger.debug('Starting program')
         self.logger.debug('Loading resources...')
