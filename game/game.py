@@ -25,8 +25,10 @@ class Game:
         self.name = 'Game Test'
         self.version = '0.0.1-alpha'
         self.state = 'title screen'
+        self.state = 'title screen'
         self.input_handler: InputHandler = input_handler
         self.renderer: Renderer = renderer
+        self.clock: Clock = clock
         self.clock: Clock = clock
         self.font = Font(30)
         self.selected = 0
@@ -50,8 +52,10 @@ class Game:
             Game Run function
         """
         start_time = time.time()
+        start_time = time.time()
         if actions.MAIN_GAME['PAUSE'] in self.input_handler.keys_pressed:
             self.state = 'paused'
+            self.components['menu'].state = 'run'
             self.components['menu'].state = 'run'
             self.logger.info('Game is Paused')
             self.input_handler.keys_pressed.remove(
@@ -68,8 +72,6 @@ class Game:
                 (0, 255, 0), (self.components['character'].x,
                               self.components['character'].y),
                 (self.components['character'].paths[0]))
-
-        if len(self.components['character'].paths):
             for path in self.components['character'].paths:
                 marker = self.renderer.get_surface(20, 20)
                 marker.fill((0, 200, 20))
@@ -160,6 +162,6 @@ class Game:
             self.renderer.update()
 
     def end(self):
-        """ 
+        """
             Game End function
         """
