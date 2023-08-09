@@ -1,7 +1,5 @@
-from game.entities.base_entity import BaseEntity
-
-
 import game.key_actions as actions
+from game.entities.base_entity import BaseEntity
 
 
 class Character(BaseEntity):
@@ -26,6 +24,8 @@ class Character(BaseEntity):
         if actions.MAIN_GAME['s'] in self.input_handler.keys_pressed:
             self.move(
                 [0, 1], delta_time)
+        if actions.MAIN_GAME['c'] in self.input_handler.keys_pressed:
+            self.paths = []
 
         if self.input_handler.mouse.m_left:
             self.can_move = True
