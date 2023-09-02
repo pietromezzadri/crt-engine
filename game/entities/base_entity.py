@@ -47,3 +47,54 @@ class BaseEntity:
                 self.paths.pop(0)
                 if not len(self.paths):
                     self.can_move = False
+
+    def collide(self, entity, top=True, bottom=True, right=True, left=True):
+        if self.width >= entity.width:
+            if top and (entity.x >= self.x and entity.x <= self.x + self.width or \
+                entity.x + entity.width >= self.x and entity.x + entity.width <= \
+                self.x + self.width) and entity.y + entity.height >= self.y and \
+                entity.y + entity.height <= self.y + self.height:
+                return True
+            if bottom and (entity.x >= self.x and entity.x <= self.x + self.width or \
+                entity.x + entity.width >= self.x and entity.x + entity.width <= \
+                self.x + self.width) and entity.y >= self.y and entity.y <= self.y \
+                + self.height:
+                return True
+        else:
+            if top and (self.x >= entity.x and self.x <= entity.x + entity.width or \
+                self.x + self.width >= entity.x and self.x + self.width <= \
+                entity.x + entity.width) and self.y + self.height >= entity.y and \
+                self.y + self.height <= entity.y + entity.height:
+                return True
+            if bottom and (self.x >= entity.x and self.x <= entity.x + entity.width or \
+                self.x + self.width >= entity.x and self.x + self.width <= \
+                entity.x + entity.width) and self.y >= entity.y and self.y <= entity.y \
+                + entity.height:
+                return True
+                    
+    def collide_corner(self, entity, top_left=True, top_right=True,
+                       bottom_left=True, bottom_right=True):
+        if top_left and self.x >= entity.x and self.x <= entity.x + entity.width and \
+            self.y >= entity.y and self.y <= entity.y + entity.height:
+            return True
+        if top_right and self.x + self.width >= entity.x and self.x + self.width <= \
+            entity.x + entity.width and self.y >= entity.y and self.y <= entity.y + \
+            entity.height:
+            return True
+        if bottom_left and self.x >= entity.x and self.x <= entity.x + entity.width \
+            and self.y + self.height >= entity.y and self.y + self.height <= \
+            entity.y + entity.height:
+            return True
+        if bottom_right and self.x + self.width >= entity.x and self.x + self.width <= \
+            entity.x + entity.width and self.y + self.height >= entity.y and self.y + \
+            self.height <= entity.y + entity.height:
+            return True
+    
+    def within(self, entity):
+        if self.x >= entity.x and self.x + \
+            self.width <= entity.x + entity.width \
+            and self.y >= entity.y and self.y \
+            + self.height <= entity.y + entity.height:
+            return True
+        else:
+            return False

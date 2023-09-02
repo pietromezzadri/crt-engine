@@ -3,16 +3,17 @@
 """
 import datetime
 import time
-from game.entities.box import Box
-from game.entities.character import Character
-from game.components.core.menu import Menu
-import utils.json_handler as json_handler
-from utils.logger import Logger
+
 import game.key_actions as actions
+import utils.json_handler as json_handler
+from backend.clock import Clock
+from backend.font import Font
 from backend.input_handler import InputHandler
 from backend.renderer import Renderer
-from backend.font import Font
-from backend.clock import Clock
+from game.components.core.menu import Menu
+from game.entities.box import Box
+from game.entities.character import Character
+from utils.logger import Logger
 
 
 class Game:
@@ -33,6 +34,7 @@ class Game:
         self.font = Font(30)
         self.selected = 0
         self.components = {}
+        self.entities = []
 
     def load(self) -> int:
         """
@@ -53,6 +55,7 @@ class Game:
         """
         start_time = time.time()
         start_time = time.time()
+        self.clock.update()
         if actions.MAIN_GAME['PAUSE'] in self.input_handler.keys_pressed:
             self.state = 'paused'
             self.components['menu'].state = 'run'
@@ -67,17 +70,19 @@ class Game:
         self.renderer.clear_screen((0, 0, 0))
         self.components['character'].blit(self.renderer.screen)
         self.components['box'].blit(self.renderer.screen)
+        for entity in self.entities:
+            entity.blit(self.renderer.screen)
+            entity.image.fill((255,165,0))
         if len(self.components['character'].paths):
-            self.renderer.draw_line(
-                (0, 255, 0), (self.components['character'].x,
-                              self.components['character'].y),
-                (self.components['character'].paths[0]))
             for path in self.components['character'].paths:
                 marker = self.renderer.get_surface(20, 20)
                 marker.fill((0, 200, 20))
                 self.renderer.screen.blit(marker, (path[0], path[1]))
 
-        self.clock.update()
+        if self.components['character'].collide(self.components['box']):
+            self.components['box'].image.fill((255,165,0))
+        else:
+            self.components['box'].image.fill((0,0,255))
         end_time = time.time() - start_time
         true_fps = 1. / (end_time or 1)
         fps_text = self.font.fonts['main'].render(
@@ -129,6 +134,15 @@ class Game:
         """
             Load components
         """
+        characters = json_handler.json_to_dict(
+            './game/assets/entities/character.json'
+        )
+        for char in characters:
+            self.entities.append(
+                Character(char['id'], char['name'], char['width'], 
+                          char['height'], self.renderer.get_surface(50, 50), 
+                          self.input_handler)
+            )
         self.components['menu']: Menu = Menu(300, 200, ['START', 'OPTIONS', 'QUIT'],
                                              self.renderer, self.input_handler,
                                              self.font, self.state)
