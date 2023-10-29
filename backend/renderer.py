@@ -31,6 +31,9 @@ class Renderer:
         """
         pygame.display.flip()
 
+    def set_icon(self, icon):
+        pygame.display.set_icon(icon)
+
     def draw_line(self, color, start, end):
         pygame.draw.line(self.screen, color, start, end, width=3)
 
@@ -64,6 +67,12 @@ class Renderer:
                     (self.width, self.width))
         except RuntimeError as exception:
             self.logger.error(str(exception))
+
+    def load_image(self, image_file):
+        """
+            Load images
+        """
+        return pygame.image.load(image_file).convert()
 
     def clear_screen(self, color):
         """

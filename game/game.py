@@ -13,7 +13,7 @@ from backend.input_handler import InputHandler
 from backend.renderer import Renderer
 from backend.font import Font
 from backend.clock import Clock
-
+from backend.physics import Physics
 
 class Game:
     """
@@ -33,6 +33,7 @@ class Game:
         self.font = Font(30)
         self.selected = 0
         self.components = {}
+        self.physics = Physics()
 
     def load(self) -> int:
         """
@@ -67,6 +68,12 @@ class Game:
         self.renderer.clear_screen((0, 0, 0))
         self.components['character'].blit(self.renderer.screen)
         self.components['box'].blit(self.renderer.screen)
+
+        if self.physics.collide(self.components['character'], self.components['box']):
+            self.components['box'].image.fill((255,0,0))
+        else:
+            self.components['box'].image.fill((0,0,255))
+
         if len(self.components['character'].paths):
             self.renderer.draw_line(
                 (0, 255, 0), (self.components['character'].x,
@@ -79,9 +86,8 @@ class Game:
 
         self.clock.update()
         end_time = time.time() - start_time
-        true_fps = 1. / (end_time or 1)
-        fps_text = self.font.fonts['main'].render(
-            f'FPS: {int(true_fps)}', 4, (255, 0, 0))
+        true_fps = int(1. / (end_time or 1))
+        fps_text = self.font.render_text(f'FPS: {true_fps}', 'main', (255, 0, 0))
         self.renderer.screen.blit(fps_text, (50, 100))
 
     def pause(self):
@@ -103,10 +109,10 @@ class Game:
                 self.logger.info('Game is Running')
                 self.input_handler.keys_pressed.remove(
                     actions.MAIN_GAME['PAUSE'])
-
-        game_text = self.font.fonts['main'].render(
-            f'Game is paused {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}',
-            4, (0, 255, 0))
+                
+        current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        game_text = self.font.render_text(f'Game is paused -> {current_time}',
+                                        'main', (0, 255, 0))
         self.renderer.screen.blit(game_text, (50, 50))
 
     def title_screen(self):
