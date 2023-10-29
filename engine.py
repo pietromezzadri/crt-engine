@@ -7,6 +7,8 @@ from backend.input_handler import InputHandler
 from backend.renderer import Renderer
 from game.game import Game
 from utils.logger import Logger
+from moviepy.editor import *
+from moviepy.video.fx import resize
 
 
 class CrtEngine:
@@ -23,6 +25,8 @@ class CrtEngine:
         self.logger.debug('Loading resources...')
         self.state = 'loading'
         self.renderer = Renderer(f'{self.name} - v.{self.version}')
+        self.icon = self.renderer.load_image('./assets/icon.jpg')
+        self.renderer.set_icon(self.icon)
         self.input_handler = InputHandler()
         self.clock = Clock()
         self.game = Game(self.renderer, self.input_handler, self.clock)
@@ -34,7 +38,6 @@ class CrtEngine:
         """
             Engine  main loop
         """
-
         while self.state == 'running':
             if not self.input_handler.event_handler():
                 self.renderer.end()
