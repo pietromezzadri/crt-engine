@@ -15,3 +15,6 @@ class Font:
 
     def get_font_list(self):
         return pygame.font.get_fonts()
+    
+    def render_text(self, text: str, font: str, color: (int, int, int)):
+        return self.fonts[font].render(text, 4, color)
