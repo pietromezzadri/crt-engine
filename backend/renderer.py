@@ -2,6 +2,7 @@
     Pygame Renderer Backend
 """
 import pygame
+import cv2
 from pygame import constants
 from utils.logger import Logger
 
@@ -73,6 +74,23 @@ class Renderer:
             Load images
         """
         return pygame.image.load(image_file).convert()
+    
+    def load_video(self, video_file):
+        """
+            Load videos
+        """
+        return cv2.VideoCapture(video_file)
+    
+    def get_video_data(self, video_image):
+        """
+            Get video byte data
+        """
+        return pygame.image.frombuffer(
+                video_image.tobytes(), video_image.shape[1::-1], "BGR")
+    
+    def get_video_fps(self, video):
+        return video.get(cv2.CAP_PROP_FPS)
+        
 
     def clear_screen(self, color):
         """

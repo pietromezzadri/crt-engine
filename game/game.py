@@ -3,12 +3,14 @@
 """
 import datetime
 import time
+import cv2
 from game.entities.box import Box
 from game.entities.character import Character
 from game.components.core.menu import Menu
 import utils.json_handler as json_handler
 from utils.logger import Logger
 import game.key_actions as actions
+from backend.audio import Audio
 from backend.input_handler import InputHandler
 from backend.renderer import Renderer
 from backend.font import Font
@@ -20,7 +22,7 @@ class Game:
         Game Class
     """
 
-    def __init__(self, renderer, input_handler, clock):
+    def __init__(self, renderer, input_handler, clock, audio):
         self.logger = Logger('game')
         self.name = 'Game Test'
         self.version = '0.0.1-alpha'
@@ -28,7 +30,7 @@ class Game:
         self.state = 'title screen'
         self.input_handler: InputHandler = input_handler
         self.renderer: Renderer = renderer
-        self.clock: Clock = clock
+        self.audio: Audio = audio
         self.clock: Clock = clock
         self.font = Font(30)
         self.selected = 0
@@ -45,6 +47,10 @@ class Game:
         self.logger.debug('loading components')
         self.load_components()
         self.logger.debug('finished loading components')
+
+        self.components['video'] = self.renderer.load_video('./game/assets/GTAtitles.mpg')
+        self.audio.load_music_file('./game/assets/file.mp3')
+        self.clock.fps = self.renderer.get_video_fps(self.components['video'])
 
         return 1
 
@@ -90,12 +96,24 @@ class Game:
         fps_text = self.font.render_text(f'FPS: {true_fps}', 'main', (255, 0, 0))
         self.renderer.screen.blit(fps_text, (50, 100))
 
+        
+        success, video_image = self.components['video'].read()
+        if success:
+            video_surf = self.renderer.get_video_data(video_image)
+            self.renderer.screen.blit(video_surf, (0, 0))
+            self.audio.play_music()
+        else:
+            self.audio.stop_music()
+            self.clock.fps = 60
+        #self.renderer.update()
+
     def pause(self):
         """
             Game Pause function
         """
 
         self.renderer.clear_screen((0, 0, 0))
+        self.audio.pause_music()
         if self.components['menu'].state == 'run':
             self.components['menu'].run()
         elif self.components['menu'].state == 'options':

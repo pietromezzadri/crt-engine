@@ -5,6 +5,7 @@
 from backend.clock import Clock
 from backend.input_handler import InputHandler
 from backend.renderer import Renderer
+from backend.audio import Audio
 from game.game import Game
 from utils.logger import Logger
 from moviepy.editor import *
@@ -28,8 +29,9 @@ class CrtEngine:
         self.icon = self.renderer.load_image('./assets/icon.jpg')
         self.renderer.set_icon(self.icon)
         self.input_handler = InputHandler()
+        self.audio = Audio()
         self.clock = Clock()
-        self.game = Game(self.renderer, self.input_handler, self.clock)
+        self.game = Game(self.renderer, self.input_handler, self.clock, self.audio)
         self.logger.debug('Finished Loading!')
         self.state = 'running'
         self.fullscreen = False
