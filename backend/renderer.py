@@ -19,6 +19,10 @@ class Renderer:
         self.title = title
         self.width = width
         self.height = height
+        self.x_start = 0
+        self.x_end = self.width
+        self.y_start = 0
+        self.y_end = self.height
         try:
             self.screen = pygame.display.set_mode((self.width, self.height))
             pygame.display.set_caption(self.title)
@@ -31,6 +35,20 @@ class Renderer:
             Renderer Update function
         """
         pygame.display.flip()
+
+    def render_world_to_screen(self, surface, world_x, world_y):
+        """
+            Transform world coords to local coords
+        """
+        local_x = world_x - self.x_start
+        local_y = world_y - self.y_start
+        self.screen.blit(surface, (local_x, local_y))
+
+    def render_to_screen(self, surface, x, y):
+        """
+            Render using local coords
+        """
+        self.screen.blit(surface, (x, y))
 
     def set_icon(self, icon):
         pygame.display.set_icon(icon)

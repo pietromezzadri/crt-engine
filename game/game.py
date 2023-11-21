@@ -3,19 +3,23 @@
 """
 import datetime
 import time
-import cv2
+
 from game.entities.box import Box
 from game.entities.character import Character
 from game.components.core.menu import Menu
+from game.events.cutscene import Cutscene
+import game.key_actions as actions
+
 import utils.json_handler as json_handler
 from utils.logger import Logger
-import game.key_actions as actions
+
 from backend.audio import Audio
 from backend.input_handler import InputHandler
 from backend.renderer import Renderer
 from backend.font import Font
 from backend.clock import Clock
 from backend.physics import Physics
+
 
 class Game:
     """
@@ -36,6 +40,7 @@ class Game:
         self.selected = 0
         self.components = {}
         self.physics = Physics()
+        self.cutscene = None
 
     def load(self) -> int:
         """
@@ -48,9 +53,11 @@ class Game:
         self.load_components()
         self.logger.debug('finished loading components')
 
-        self.components['video'] = self.renderer.load_video('./game/assets/GTAtitles.mpg')
-        self.audio.load_music_file('./game/assets/file.mp3')
-        self.clock.fps = self.renderer.get_video_fps(self.components['video'])
+        
+        self.cutscene = Cutscene(self.renderer, self.input_handler, self.audio, './game/assets/GTAtitles.mpg',
+                                 './game/assets/file.mp3')
+
+        self.clock.fps = self.renderer.get_video_fps(self.cutscene.video)
 
         return 1
 
@@ -60,6 +67,10 @@ class Game:
         """
         start_time = time.time()
         start_time = time.time()
+        camera_right = False
+        camera_left = False
+        camera_up = False
+        camera_down = False
         if actions.MAIN_GAME['PAUSE'] in self.input_handler.keys_pressed:
             self.state = 'paused'
             self.components['menu'].state = 'run'
@@ -67,18 +78,56 @@ class Game:
             self.logger.info('Game is Paused')
             self.input_handler.keys_pressed.remove(
                 actions.MAIN_GAME['PAUSE'])
+        
+        if actions.MAIN_GAME['w'] in self.input_handler.keys_pressed:
+            camera_up = True
+            
+        if actions.MAIN_GAME['s'] in self.input_handler.keys_pressed:
+            camera_down = True
+            
+        if actions.MAIN_GAME['a'] in self.input_handler.keys_pressed:
+            camera_left = True
+            
+        if actions.MAIN_GAME['d'] in self.input_handler.keys_pressed:
+            camera_right = True
+            
 
+        last_x = self.components['character'].x
+        last_y = self.components['character'].y
         self.components['character'].update(self.clock.delta_time())
+
+        cam_x = self.components['character'].x - last_x
+        cam_y = self.components['character'].y - last_y
+
+        
+        if camera_right:
+            self.renderer.x_start += 5
+            self.renderer.x_end += 5
+        
+        elif camera_left:
+            self.renderer.x_start -= 5
+            self.renderer.x_end -= 5
+
+        if camera_up:
+            self.renderer.y_start -= 5
+            self.renderer.y_end -= 5
+
+        if camera_down:
+            self.renderer.y_start += 5
+            self.renderer.y_end += 5 
 
         # GAME LOOP
         self.renderer.clear_screen((0, 0, 0))
-        self.components['character'].blit(self.renderer.screen)
-        self.components['box'].blit(self.renderer.screen)
+        chr_id = self.font.render_text(f"id: {self.components['character']._id}", 'main', (0,255,0))
+        chr_pos_x = self.font.render_text(f"x: {self.components['character'].x:.2f}", 'main', (0,255,0))
+        chr_pos_y = self.font.render_text(f"y: {self.components['character'].y:.2f}", 'main', (0,255,0))
+        
+        self.renderer.render_world_to_screen(chr_id, self.components['character'].x, self.components['character'].y - 100)
+        self.renderer.render_world_to_screen(chr_pos_x, self.components['character'].x, self.components['character'].y - 70)
+        self.renderer.render_world_to_screen(chr_pos_y, self.components['character'].x, self.components['character'].y - 40)
 
-        if self.physics.collide(self.components['character'], self.components['box']):
-            self.components['box'].image.fill((255,0,0))
-        else:
-            self.components['box'].image.fill((0,0,255))
+        self.renderer.render_world_to_screen(self.components['character'].image, self.components['character'].x, self.components['character'].y)
+        self.renderer.render_world_to_screen(self.components['box'].image, self.components['box'].x, self.components['box'].y)
 
         if len(self.components['character'].paths):
             self.renderer.draw_line(
@@ -96,16 +145,11 @@ class Game:
         fps_text = self.font.render_text(f'FPS: {true_fps}', 'main', (255, 0, 0))
         self.renderer.screen.blit(fps_text, (50, 100))
 
-        
-        success, video_image = self.components['video'].read()
-        if success:
-            video_surf = self.renderer.get_video_data(video_image)
-            self.renderer.screen.blit(video_surf, (0, 0))
-            self.audio.play_music()
-        else:
-            self.audio.stop_music()
+        self.cutscene.run()
+
+        if not self.cutscene.status:
             self.clock.fps = 60
-        #self.renderer.update()
+
 
     def pause(self):
         """
@@ -157,7 +201,7 @@ class Game:
                                              self.renderer, self.input_handler,
                                              self.font, self.state)
         self.components['character']: Character = Character(
-            '1', 'test', 50, 50, self.renderer.get_surface(50, 50),
+            '1', 'test', 350, 350, self.renderer.get_surface(50, 50),
             self.input_handler)
         self.components['character'].image.fill((0, 0, 255))
         self.components['box']: Box = Box(
