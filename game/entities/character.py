@@ -12,18 +12,20 @@ class Character(BaseEntity):
         self.movement_images = []
 
     def update(self, delta_time):
-        if actions.MAIN_GAME['d'] in self.input_handler.keys_pressed:
-            self.move(
-                [1, 0], delta_time)
-        if actions.MAIN_GAME['a'] in self.input_handler.keys_pressed:
-            self.move(
-                [-1, 0], delta_time)
-        if actions.MAIN_GAME['w'] in self.input_handler.keys_pressed:
-            self.move(
-                [0, -1], delta_time)
-        if actions.MAIN_GAME['s'] in self.input_handler.keys_pressed:
-            self.move(
-                [0, 1], delta_time)
+        if self.control:
+            if actions.MAIN_GAME['d'] in self.input_handler.keys_pressed:
+                self.move(
+                    [1, 0], delta_time)
+            if actions.MAIN_GAME['a'] in self.input_handler.keys_pressed:
+                self.move(
+                    [-1, 0], delta_time)
+            if actions.MAIN_GAME['w'] in self.input_handler.keys_pressed:
+                self.move(
+                    [0, -1], delta_time)
+            if actions.MAIN_GAME['s'] in self.input_handler.keys_pressed:
+                self.move(
+                    [0, 1], delta_time)
+                
         if actions.MAIN_GAME['c'] in self.input_handler.keys_pressed:
             self.paths = []
 

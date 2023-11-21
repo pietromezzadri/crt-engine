@@ -1,0 +1,5 @@
+convert AVI to mp3
+ffmpeg -i file.avi -vn -ar 44100 -ac 2 -ab 192k -f mp3 file.mp3
+
+conver MPG to AVI
+ffmpeg -i GTAtitles.mpg -c:v copy -c:a copy file.avi
