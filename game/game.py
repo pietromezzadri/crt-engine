@@ -28,7 +28,7 @@ class Game:
     """
 
     def __init__(self, renderer, input_handler, clock, audio):
-        self.logger = Logger('game')
+        self.logger = Logger('game', False, True)
         self.name = 'Game Test'
         self.version = '0.0.1-alpha'
         self.state = 'title screen'
@@ -133,13 +133,13 @@ class Game:
 
         if len(self.components['character'].paths):
             self.renderer.draw_line(
-                (0, 255, 0), (self.components['character'].x,
+                (0, 255, 0), self.renderer.global_to_local_coords(self.components['character'].x,
                               self.components['character'].y),
-                (self.components['character'].paths[0]))
+                self.renderer.global_to_local_coords(self.components['character'].paths[0][0], self.components['character'].paths[0][1]))
             for path in self.components['character'].paths:
                 marker = self.renderer.get_surface(20, 20)
                 marker.fill((0, 200, 20))
-                self.renderer.screen.blit(marker, (path[0], path[1]))
+                self.renderer.render_world_to_screen(marker, path[0], path[1])
 
         self.clock.update()
         end_time = time.time() - start_time
@@ -199,16 +199,16 @@ class Game:
         """
             Load components
         """
-        self.components['menu']: Menu = Menu(300, 200, ['START', 'OPTIONS', 'QUIT'],
+        self.components['menu'] = Menu(300, 200, ['START', 'OPTIONS', 'QUIT'],
                                              self.renderer, self.input_handler,
                                              self.font, self.state)
-        self.components['character']: Character = Character(
+        self.components['character'] = Character(
             '1', 'test', 350, 350, self.renderer.get_surface(50, 50),
-            self.input_handler)
+            self.input_handler, self.renderer)
         self.components['character'].image.fill((0, 0, 255))
-        self.components['box']: Box = Box(
+        self.components['box'] = Box(
             '2', 'box', 20, 20, self.renderer.get_surface(20, 20),
-            self.input_handler)
+            self.input_handler, self.renderer)
         self.components['box'].image.fill((0, 20, 180))
         self.components['box'].x = 300
         self.components['box'].y = 300

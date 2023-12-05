@@ -13,7 +13,7 @@ class Renderer:
     """
 
     def __init__(self, title, width=800, height=600):
-        self.logger = Logger('renderer')
+        self.logger = Logger('renderer', False, True)
         pygame.display.init()
         pygame.font.init()
         self.title = title
@@ -35,6 +35,22 @@ class Renderer:
             Renderer Update function
         """
         pygame.display.flip()
+
+    def local_to_global_coords(self, local_x, local_y):
+        """
+            Returns global coords from local
+        """
+        world_x = local_x + self.x_start
+        world_y = local_y + self.y_start
+        return (world_x, world_y)
+    
+    def global_to_local_coords(self, world_x, world_y):
+        """
+            Returns local coords from global
+        """
+        local_x = world_x - self.x_start
+        local_y = world_y - self.y_start
+        return (local_x, local_y)
 
     def render_world_to_screen(self, surface, world_x, world_y):
         """

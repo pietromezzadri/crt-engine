@@ -9,7 +9,7 @@ import game.key_actions as actions
 class Cutscene:
     def __init__(self, renderer, input_handler, audio,
                  video_file, music_file, subtitles = None) -> None:
-        self.logger = Logger('cutscene')
+        self.logger = Logger('cutscene', False, True)
         self.renderer: Renderer = renderer
         self.input_handler: InputHandler = input_handler
         self.audio: Audio = audio

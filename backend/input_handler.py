@@ -29,7 +29,7 @@ class Mouse:
 
 class InputHandler:
     def __init__(self) -> None:
-        self.logger = Logger('input-handler')
+        self.logger = Logger('input-handler', False, True)
         self.keys_pressed: list = []
         self.logger.debug('InputHandler loaded!')
         self.mouse: Mouse = Mouse()

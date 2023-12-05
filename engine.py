@@ -19,7 +19,7 @@ class CrtEngine:
     def __init__(self) -> None:
         self.name = 'CRT Game Engine'
         self.version = '0.0.2_pre-alpha'
-        self.logger = Logger('main-engine')
+        self.logger = Logger('main-engine', False, True)
         self.logger.debug('Starting program')
         self.logger.debug('Loading resources...')
         self.state = 'loading'

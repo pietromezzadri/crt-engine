@@ -3,9 +3,9 @@ from game.entities.base_entity import BaseEntity
 
 
 class Character(BaseEntity):
-    def __init__(self, _id, name, width, height, image, input_handler):
+    def __init__(self, _id, name, width, height, image, input_handler, renderer):
         BaseEntity.__init__(self, _id, name, width,
-                            height, image, input_handler)
+                            height, image, input_handler, renderer)
         self.health = 100
         self.defense = 0
         self.control = False
@@ -37,7 +37,7 @@ class Character(BaseEntity):
 
         if self.input_handler.mouse.m_left:
             self.can_move = True
-            self.paths.append((self.input_handler.mouse.get_x(),
+            self.paths.append(self.renderer.local_to_global_coords(self.input_handler.mouse.get_x(),
                                self.input_handler.mouse.get_y()))
 
         if self.can_move:

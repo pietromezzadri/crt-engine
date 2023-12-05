@@ -30,69 +30,119 @@ class Logger:
         Class Responsible for Logging
     """
 
-    def __init__(self, name):
+    def __init__(self, name, logfile=False, console=False):
         self.name = name
+        self.logfile = logfile
+        self.console = console
 
     def debug(self, msg):
         """
             Debug logger
         """
         logging.root.handlers = []
+
+        handlers = []
+
+        print_log = False
+        
+        if self.logfile:
+            handlers.append(logging.FileHandler("logs/debug.log"))
+            print_log = True
+        
+        if self.console:
+            handlers.append(logging.StreamHandler())
+            print_log = True
+        
         logging.basicConfig(
             level=logging.DEBUG,
             format=f"{MAGENTA}{self.name:<15}{RESET} {BLUE_BG}[%(levelname)s]{RESET} \
                 {'':<3} {YELLOW}%(message)s{RESET} %(asctime)s",
-            handlers=[
-                logging.FileHandler("logs/debug.log"),
-                logging.StreamHandler()
-            ]
+            handlers=handlers
         )
-        logging.debug(msg)
+
+        if print_log:
+            logging.debug(msg)
 
     def info(self, msg):
         """
             Info logger
         """
         logging.root.handlers = []
+
+        handlers = []
+
+        print_log = False
+        
+        if self.logfile:
+            handlers.append(logging.FileHandler("logs/debug.log"))
+            print_log = True
+        
+        if self.console:
+            handlers.append(logging.StreamHandler())
+            print_log = True
+
         logging.basicConfig(
             level=logging.INFO,
             format=f"{MAGENTA}{self.name:<15}{RESET} {GREY_BG}[%(levelname)s]{RESET} \
                 {'':<4} {YELLOW}%(message)s{RESET} %(asctime)s",
-            handlers=[
-                logging.FileHandler("logs/debug.log"),
-                logging.StreamHandler()
-            ]
+            handlers=handlers
         )
-        logging.info(msg)
+
+        if print_log:
+            logging.info(msg)
 
     def warning(self, msg):
         """
             Warning logger
         """
         logging.root.handlers = []
+
+        handlers = []
+
+        print_log = False
+        
+        if self.logfile:
+            handlers.append(logging.FileHandler("logs/debug.log"))
+            print_log = True
+        
+        if self.console:
+            handlers.append(logging.StreamHandler())
+            print_log = True
+
         logging.basicConfig(
             level=logging.WARNING,
             format=f"{MAGENTA}{self.name:<15}{RESET} {YELLOW_BG}[%(levelname)s]{RESET} \
                 {'':<3} {YELLOW}%(message)s{RESET} %(asctime)s",
-            handlers=[
-                logging.FileHandler("logs/debug.log"),
-                logging.StreamHandler()
-            ]
+            handlers=handlers
         )
-        logging.warning(msg)
+
+        if print_log:
+            logging.warning(msg)
 
     def error(self, msg):
         """
             ERROR logger
         """
         logging.root.handlers = []
+
+        handlers = []
+
+        print_log = False
+        
+        if self.logfile:
+            handlers.append(logging.FileHandler("logs/debug.log"))
+            print_log = True
+        
+        if self.console:
+            handlers.append(logging.StreamHandler())
+            print_log = True
+
         logging.basicConfig(
             level=logging.ERROR,
             format=f"{MAGENTA}{self.name:<15}{RESET} {RED_BG}[%(levelname)s]{RESET} \
                 {'':<3} {YELLOW}%(message)s{RESET} %(asctime)s",
-            handlers=[
-                logging.FileHandler("logs/debug.log"),
-                logging.StreamHandler()
-            ]
+            handlers=handlers
         )
-        logging.error(msg)
+
+        if print_log:
+            logging.error(msg)

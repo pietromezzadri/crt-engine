@@ -1,6 +1,6 @@
 class BaseEntity:
 
-    def __init__(self, _id, name, width, height, image, input_handler):
+    def __init__(self, _id, name, width, height, image, input_handler, renderer):
         self._id = _id
         self.name = name
         self.x = 0
@@ -11,6 +11,7 @@ class BaseEntity:
         self.height = height
         self.image = image
         self.input_handler = input_handler
+        self.renderer = renderer
         self.can_move = True
         self.paths = []
 
