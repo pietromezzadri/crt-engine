@@ -66,6 +66,9 @@ class Renderer:
         """
             Renderer Screen Size function
         """
+        self.x_end += width - self.width
+        self.y_end += height - self.height
+
         self.width = width
         self.height = height
         try:

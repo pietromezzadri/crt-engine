@@ -65,6 +65,5 @@ class CrtEngine:
             if self.game.load():
                 self.logger.debug('Finished Loading Game...')
                 self.game.state = 'title screen'
-                self.run()
             else:
                 self.logger.debug('Unable to load Engine')

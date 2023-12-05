@@ -25,7 +25,13 @@ class Character(BaseEntity):
             if actions.MAIN_GAME['s'] in self.input_handler.keys_pressed:
                 self.move(
                     [0, 1], delta_time)
-                
+            if actions.MAIN_GAME['shift'] in self.input_handler.keys_pressed:
+                self.x_speed = 0.6
+                self.y_speed = 0.6
+            else:
+                self.x_speed = 0.3
+                self.y_speed = 0.3    
+            
         if actions.MAIN_GAME['c'] in self.input_handler.keys_pressed:
             self.paths = []
 

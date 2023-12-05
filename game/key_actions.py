@@ -17,4 +17,5 @@ MAIN_GAME = {
     'd': constants.K_d,
     'c': constants.K_c,
     'skip': constants.K_x,
+    'shift': constants.K_LSHIFT,
 }

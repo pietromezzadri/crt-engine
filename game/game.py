@@ -6,6 +6,7 @@ import time
 
 from game.entities.box import Box
 from game.entities.character import Character
+from game.entities.camera import Camera
 from game.components.core.menu import Menu
 from game.events.cutscene import Cutscene
 import game.key_actions as actions
@@ -30,7 +31,6 @@ class Game:
         self.logger = Logger('game')
         self.name = 'Game Test'
         self.version = '0.0.1-alpha'
-        self.state = 'title screen'
         self.state = 'title screen'
         self.input_handler: InputHandler = input_handler
         self.renderer: Renderer = renderer
@@ -71,6 +71,7 @@ class Game:
         camera_left = False
         camera_up = False
         camera_down = False
+        self.components['character'].control = True
         if actions.MAIN_GAME['PAUSE'] in self.input_handler.keys_pressed:
             self.state = 'paused'
             self.components['menu'].state = 'run'
@@ -79,18 +80,19 @@ class Game:
             self.input_handler.keys_pressed.remove(
                 actions.MAIN_GAME['PAUSE'])
         
-        if actions.MAIN_GAME['w'] in self.input_handler.keys_pressed:
-            camera_up = True
-            
-        if actions.MAIN_GAME['s'] in self.input_handler.keys_pressed:
-            camera_down = True
-            
-        if actions.MAIN_GAME['a'] in self.input_handler.keys_pressed:
-            camera_left = True
-            
-        if actions.MAIN_GAME['d'] in self.input_handler.keys_pressed:
-            camera_right = True
-            
+        if not self.components['character'].control:
+            if actions.MAIN_GAME['w'] in self.input_handler.keys_pressed:
+                camera_up = True
+                
+            if actions.MAIN_GAME['s'] in self.input_handler.keys_pressed:
+                camera_down = True
+                
+            if actions.MAIN_GAME['a'] in self.input_handler.keys_pressed:
+                camera_left = True
+                
+            if actions.MAIN_GAME['d'] in self.input_handler.keys_pressed:
+                camera_right = True
+                
 
         last_x = self.components['character'].x
         last_y = self.components['character'].y
@@ -100,19 +102,19 @@ class Game:
         cam_y = self.components['character'].y - last_y
 
         
-        if camera_right:
+        if camera_right or self.renderer.x_end - self.components['character'].x < 300:
             self.renderer.x_start += 5
             self.renderer.x_end += 5
         
-        elif camera_left:
+        elif camera_left or self.components['character'].x - self.renderer.x_start < 300:
             self.renderer.x_start -= 5
             self.renderer.x_end -= 5
 
-        if camera_up:
+        if camera_up or self.components['character'].y - self.renderer.y_start < 300:
             self.renderer.y_start -= 5
             self.renderer.y_end -= 5
 
-        if camera_down:
+        if camera_down or self.renderer.y_end - self.components['character'].y < 300:
             self.renderer.y_start += 5
             self.renderer.y_end += 5 
 
