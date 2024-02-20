@@ -4,6 +4,7 @@
 
 from backend.clock import Clock
 from backend.input_handler import InputHandler
+from backend.font import Font
 from backend.renderer import Renderer
 from backend.audio import Audio
 from game.game import Game
@@ -23,13 +24,14 @@ class CrtEngine:
         self.logger.debug('Starting program')
         self.logger.debug('Loading resources...')
         self.state = 'loading'
-        self.renderer = Renderer(f'{self.name} - v.{self.version}')
+        self.font = Font(30)
+        self.renderer = Renderer(f'{self.name} - v.{self.version}', self.font)
         self.icon = self.renderer.load_image('./assets/icon.jpg')
         self.renderer.set_icon(self.icon)
-        self.input_handler = InputHandler()
+        self.input_handler = InputHandler(self.renderer)
         self.audio = Audio()
         self.clock = Clock()
-        self.game = Game(self.renderer, self.input_handler, self.clock, self.audio)
+        self.game = Game(self.font, self.renderer, self.input_handler, self.clock, self.audio)
         self.logger.debug('Finished Loading!')
         self.state = 'running'
         self.fullscreen = False

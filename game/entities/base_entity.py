@@ -1,3 +1,5 @@
+from utils.format_string import format_field
+
 class BaseEntity:
 
     def __init__(self, _id, name, width, height, image, input_handler, renderer):
@@ -14,6 +16,9 @@ class BaseEntity:
         self.renderer = renderer
         self.can_move = True
         self.paths = []
+        self.print_info_screen = False
+        self.info_fields = ['_id', 'x', 'y']
+        self.selected = True
 
     def blit(self, surface):
         surface.blit(self.image, (self.x, self.y))
@@ -48,3 +53,9 @@ class BaseEntity:
                 self.paths.pop(0)
                 if not len(self.paths):
                     self.can_move = False
+
+    def get_info_screen(self):
+        text_to_print = []
+        for field in self.info_fields:
+            text_to_print.append(f"{field}: {format_field(getattr(self, field))}")
+        return text_to_print

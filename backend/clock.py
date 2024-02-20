@@ -13,3 +13,6 @@ class Clock:
 
     def update(self):
         self.clock.tick(self.fps)
+
+    def delay(self, wait_time):
+        pygame.time.delay(wait_time)

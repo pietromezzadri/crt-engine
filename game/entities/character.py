@@ -1,5 +1,6 @@
 import game.key_actions as actions
 from game.entities.base_entity import BaseEntity
+from backend.physics import Physics
 
 
 class Character(BaseEntity):
@@ -10,6 +11,7 @@ class Character(BaseEntity):
         self.defense = 0
         self.control = False
         self.movement_images = []
+        self.physics = Physics()
 
     def update(self, delta_time):
         if self.control:
@@ -35,10 +37,18 @@ class Character(BaseEntity):
         if actions.MAIN_GAME['c'] in self.input_handler.keys_pressed:
             self.paths = []
 
-        if self.input_handler.mouse.m_left:
+        if self.input_handler.mouse.m_right:
             self.can_move = True
             self.paths.append(self.renderer.local_to_global_coords(self.input_handler.mouse.get_x(),
                                self.input_handler.mouse.get_y()))
+            
+        if self.input_handler.mouse.m_left:
+            if self.physics.collide_local_to_global(self.input_handler.mouse, self, \
+                                                    self.input_handler.renderer.x_start, \
+                                                    self.input_handler.renderer.y_start):
+                self.selected = True
+            else:
+                self.selected = False
 
         if self.can_move:
             self.move_to_point(delta_time)

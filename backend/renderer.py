@@ -5,6 +5,7 @@ import pygame
 import cv2
 from pygame import constants
 from utils.logger import Logger
+from backend.font import Font
 
 
 class Renderer:
@@ -12,10 +13,10 @@ class Renderer:
         Pygame Renderer Backend
     """
 
-    def __init__(self, title, width=800, height=600):
+    def __init__(self, title, font, width=800, height=600):
         self.logger = Logger('renderer', False, True)
         pygame.display.init()
-        pygame.font.init()
+        self.font: Font = font
         self.title = title
         self.width = width
         self.height = height
@@ -35,6 +36,18 @@ class Renderer:
             Renderer Update function
         """
         pygame.display.flip()
+
+    def local_to_global_x(self, local_x):
+        return local_x + self.x_start
+
+    def local_to_global_y(self, local_y):
+        return local_y + self.y_start
+
+    def global_to_local_x(self, world_x):
+        return world_x - self.x_start
+
+    def global_to_local_y(self, world_y):
+        return world_y - self.y_start
 
     def local_to_global_coords(self, local_x, local_y):
         """
@@ -59,6 +72,23 @@ class Renderer:
         local_x = world_x - self.x_start
         local_y = world_y - self.y_start
         self.screen.blit(surface, (local_x, local_y))
+
+    def render_info_to_screen(self, entity, spacing=15):
+        """
+            Render entity info to screen
+        """
+        info_text_list = entity.get_info_screen()
+        total_items = len(entity.info_fields)
+
+        for index, info in enumerate(info_text_list):
+            text = self.font.render_text(info, 'main_small', (150, 50, 50))
+            self.render_world_to_screen(text, entity.x, entity.y - (spacing*(total_items-index)) - (50-spacing))
+
+    def render_selected(self, entity, border):
+        local_coords = self.global_to_local_coords(entity.x, entity.y)
+        pygame.draw.rect(self.screen, (235, 200, 50), (local_coords[0]-border, local_coords[1]-border, \
+                                                       entity.width+border, entity.height+border), border)
+
 
     def render_to_screen(self, surface, x, y):
         """

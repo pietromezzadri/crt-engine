@@ -27,18 +27,19 @@ class Game:
         Game Class
     """
 
-    def __init__(self, renderer, input_handler, clock, audio):
+    def __init__(self, font, renderer, input_handler, clock, audio):
         self.logger = Logger('game', False, True)
         self.name = 'Game Test'
         self.version = '0.0.1-alpha'
         self.state = 'title screen'
-        self.input_handler: InputHandler = input_handler
+        self.font: Font = font
         self.renderer: Renderer = renderer
+        self.input_handler: InputHandler = input_handler
         self.audio: Audio = audio
         self.clock: Clock = clock
-        self.font = Font(30)
         self.selected = 0
         self.components = {}
+        self.entities = []
         self.physics = Physics()
         self.cutscene = None
 
@@ -96,7 +97,8 @@ class Game:
 
         last_x = self.components['character'].x
         last_y = self.components['character'].y
-        self.components['character'].update(self.clock.delta_time())
+        for entity in self.entities:
+            entity.update(self.clock.delta_time())
 
         cam_x = self.components['character'].x - last_x
         cam_y = self.components['character'].y - last_y
@@ -120,16 +122,21 @@ class Game:
 
         # GAME LOOP
         self.renderer.clear_screen((0, 0, 0))
-        chr_id = self.font.render_text(f"id: {self.components['character']._id}", 'main', (0,255,0))
-        chr_pos_x = self.font.render_text(f"x: {self.components['character'].x:.2f}", 'main', (0,255,0))
-        chr_pos_y = self.font.render_text(f"y: {self.components['character'].y:.2f}", 'main', (0,255,0))
-        
-        self.renderer.render_world_to_screen(chr_id, self.components['character'].x, self.components['character'].y - 100)
-        self.renderer.render_world_to_screen(chr_pos_x, self.components['character'].x, self.components['character'].y - 70)
-        self.renderer.render_world_to_screen(chr_pos_y, self.components['character'].x, self.components['character'].y - 40)
 
-        self.renderer.render_world_to_screen(self.components['character'].image, self.components['character'].x, self.components['character'].y)
-        self.renderer.render_world_to_screen(self.components['box'].image, self.components['box'].x, self.components['box'].y)
+        left_up_corner = self.font.render_text(f"({self.renderer.x_start}, {self.renderer.y_start})", 'main', (150,50,50))
+        right_up_corner = self.font.render_text(f"({self.renderer.x_end}, {self.renderer.y_start})", 'main', (150,50,50))
+        left_down_corner = self.font.render_text(f"({self.renderer.x_start}, {self.renderer.y_end})", 'main', (150,50,50))
+        right_down_corner = self.font.render_text(f"({self.renderer.x_end}, {self.renderer.y_end})", 'main', (150,50,50))
+
+        self.renderer.render_to_screen(left_up_corner, 10, 10)
+        self.renderer.render_to_screen(right_up_corner, self.renderer.width - 180, 10)
+        self.renderer.render_to_screen(left_down_corner, 10, self.renderer.height - 50)
+        self.renderer.render_to_screen(right_down_corner, self.renderer.width - 180, self.renderer.height - 50)
+
+        if self.physics.collide(self.components['box'], self.components['character']):
+            self.components['box'].image.fill((255,0,0))
+        else:
+            self.components['box'].image.fill((0,0,255))
 
         if len(self.components['character'].paths):
             self.renderer.draw_line(
@@ -141,13 +148,20 @@ class Game:
                 marker.fill((0, 200, 20))
                 self.renderer.render_world_to_screen(marker, path[0], path[1])
 
+        for entity in self.entities:
+            self.renderer.render_world_to_screen(entity.image, entity.x, entity.y)
+
+            if entity.selected:
+                self.renderer.render_info_to_screen(entity)
+                self.renderer.render_selected(entity, 3)
+
         self.clock.update()
         end_time = time.time() - start_time
         true_fps = int(1. / (end_time or 1))
         fps_text = self.font.render_text(f'FPS: {true_fps}', 'main', (255, 0, 0))
         self.renderer.screen.blit(fps_text, (50, 100))
 
-        self.cutscene.run()
+        #self.cutscene.run()
 
         if not self.cutscene.status:
             self.clock.fps = 60
@@ -203,7 +217,7 @@ class Game:
                                              self.renderer, self.input_handler,
                                              self.font, self.state)
         self.components['character'] = Character(
-            '1', 'test', 350, 350, self.renderer.get_surface(50, 50),
+            '1', 'test', 50, 50, self.renderer.get_surface(50, 50),
             self.input_handler, self.renderer)
         self.components['character'].image.fill((0, 0, 255))
         self.components['box'] = Box(
@@ -212,6 +226,8 @@ class Game:
         self.components['box'].image.fill((0, 20, 180))
         self.components['box'].x = 300
         self.components['box'].y = 300
+        self.entities.append(self.components['character'])
+        self.entities.append(self.components['box'])
 
     def load_fonts(self):
         """
@@ -226,10 +242,14 @@ class Game:
             self.renderer.clear_screen((0, 0, 0))
             self.font.create_font(
                 font['key'], f"./game/assets/fonts/{font['file_name']}", 30)
-            game_text = self.font.fonts['system'].render(
-                f'{index+1} / {total_fonts} loaded!', 4, (0, 255, 0))
-            self.renderer.screen.blit(game_text, (50, 250))
+            self.font.create_font(
+                f"{font['key']}_small", f"./game/assets/fonts/{font['file_name']}", 20)
+            font_number = self.font.render_text(f'{index+1} / {total_fonts} loaded!', 'system', (0, 255, 0))
+            font_name = self.font.render_text(font['file_name'], 'system', (0, 255, 0))
+            self.renderer.render_to_screen(font_number, 50, 50)
+            self.renderer.render_to_screen(font_name, 50, 100)
             self.renderer.update()
+            self.clock.delay(200)
 
     def end(self):
         """
