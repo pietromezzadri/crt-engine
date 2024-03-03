@@ -218,11 +218,11 @@ class Game:
                                              self.font, self.state)
         self.components['character'] = Character(
             '1', 'test', 50, 50, self.renderer.get_surface(50, 50),
-            self.input_handler, self.renderer)
+            self.input_handler)
         self.components['character'].image.fill((0, 0, 255))
         self.components['box'] = Box(
             '2', 'box', 20, 20, self.renderer.get_surface(20, 20),
-            self.input_handler, self.renderer)
+            self.input_handler)
         self.components['box'].image.fill((0, 20, 180))
         self.components['box'].x = 300
         self.components['box'].y = 300

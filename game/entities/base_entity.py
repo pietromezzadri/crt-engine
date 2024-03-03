@@ -2,7 +2,7 @@ from utils.format_string import format_field
 
 class BaseEntity:
 
-    def __init__(self, _id, name, width, height, image, input_handler, renderer):
+    def __init__(self, _id, name, width, height, image, input_handler):
         self._id = _id
         self.name = name
         self.x = 0
@@ -13,7 +13,6 @@ class BaseEntity:
         self.height = height
         self.image = image
         self.input_handler = input_handler
-        self.renderer = renderer
         self.can_move = True
         self.paths = []
         self.print_info_screen = False
