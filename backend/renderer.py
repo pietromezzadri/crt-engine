@@ -56,7 +56,7 @@ class Renderer:
         world_x = local_x + self.x_start
         world_y = local_y + self.y_start
         return (world_x, world_y)
-    
+
     def global_to_local_coords(self, world_x, world_y):
         """
             Returns local coords from global
@@ -82,13 +82,13 @@ class Renderer:
 
         for index, info in enumerate(info_text_list):
             text = self.font.render_text(info, 'main_small', (150, 50, 50))
-            self.render_world_to_screen(text, entity.x, entity.y - (spacing*(total_items-index)) - (50-spacing))
+            self.render_world_to_screen(
+                text, entity.x, entity.y - (spacing*(total_items-index)) - (50-spacing))
 
     def render_selected(self, entity, border):
         local_coords = self.global_to_local_coords(entity.x, entity.y)
-        pygame.draw.rect(self.screen, (235, 200, 50), (local_coords[0]-border, local_coords[1]-border, \
+        pygame.draw.rect(self.screen, (235, 200, 50), (local_coords[0]-border, local_coords[1]-border,
                                                        entity.width+border, entity.height+border), border)
-
 
     def render_to_screen(self, surface, x, y):
         """
@@ -141,23 +141,22 @@ class Renderer:
             Load images
         """
         return pygame.image.load(image_file).convert()
-    
+
     def load_video(self, video_file):
         """
             Load videos
         """
         return cv2.VideoCapture(video_file)
-    
+
     def get_video_data(self, video_image):
         """
             Get video byte data
         """
         return pygame.image.frombuffer(
-                video_image.tobytes(), video_image.shape[1::-1], "BGR")
-    
+            video_image.tobytes(), video_image.shape[1::-1], "BGR")
+
     def get_video_fps(self, video):
         return video.get(cv2.CAP_PROP_FPS)
-        
 
     def clear_screen(self, color):
         """

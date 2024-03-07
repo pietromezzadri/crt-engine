@@ -54,7 +54,6 @@ class Game:
         self.load_components()
         self.logger.debug('finished loading components')
 
-        
         self.cutscene = Cutscene(self.renderer, self.input_handler, self.audio, './game/assets/GTAtitles.mpg',
                                  './game/assets/file.mp3')
 
@@ -80,20 +79,19 @@ class Game:
             self.logger.info('Game is Paused')
             self.input_handler.keys_pressed.remove(
                 actions.MAIN_GAME['PAUSE'])
-        
+
         if not self.components['character'].control:
             if actions.MAIN_GAME['w'] in self.input_handler.keys_pressed:
                 camera_up = True
-                
+
             if actions.MAIN_GAME['s'] in self.input_handler.keys_pressed:
                 camera_down = True
-                
+
             if actions.MAIN_GAME['a'] in self.input_handler.keys_pressed:
                 camera_left = True
-                
+
             if actions.MAIN_GAME['d'] in self.input_handler.keys_pressed:
                 camera_right = True
-                
 
         last_x = self.components['character'].x
         last_y = self.components['character'].y
@@ -103,11 +101,10 @@ class Game:
         cam_x = self.components['character'].x - last_x
         cam_y = self.components['character'].y - last_y
 
-        
         if camera_right or self.renderer.x_end - self.components['character'].x < 300:
             self.renderer.x_start += 5
             self.renderer.x_end += 5
-        
+
         elif camera_left or self.components['character'].x - self.renderer.x_start < 300:
             self.renderer.x_start -= 5
             self.renderer.x_end -= 5
@@ -118,30 +115,37 @@ class Game:
 
         if camera_down or self.renderer.y_end - self.components['character'].y < 300:
             self.renderer.y_start += 5
-            self.renderer.y_end += 5 
+            self.renderer.y_end += 5
 
         # GAME LOOP
         self.renderer.clear_screen((0, 0, 0))
 
-        left_up_corner = self.font.render_text(f"({self.renderer.x_start}, {self.renderer.y_start})", 'main', (150,50,50))
-        right_up_corner = self.font.render_text(f"({self.renderer.x_end}, {self.renderer.y_start})", 'main', (150,50,50))
-        left_down_corner = self.font.render_text(f"({self.renderer.x_start}, {self.renderer.y_end})", 'main', (150,50,50))
-        right_down_corner = self.font.render_text(f"({self.renderer.x_end}, {self.renderer.y_end})", 'main', (150,50,50))
+        left_up_corner = self.font.render_text(
+            f"({self.renderer.x_start}, {self.renderer.y_start})", 'main', (150, 50, 50))
+        right_up_corner = self.font.render_text(
+            f"({self.renderer.x_end}, {self.renderer.y_start})", 'main', (150, 50, 50))
+        left_down_corner = self.font.render_text(
+            f"({self.renderer.x_start}, {self.renderer.y_end})", 'main', (150, 50, 50))
+        right_down_corner = self.font.render_text(
+            f"({self.renderer.x_end}, {self.renderer.y_end})", 'main', (150, 50, 50))
 
         self.renderer.render_to_screen(left_up_corner, 10, 10)
-        self.renderer.render_to_screen(right_up_corner, self.renderer.width - 180, 10)
-        self.renderer.render_to_screen(left_down_corner, 10, self.renderer.height - 50)
-        self.renderer.render_to_screen(right_down_corner, self.renderer.width - 180, self.renderer.height - 50)
+        self.renderer.render_to_screen(
+            right_up_corner, self.renderer.width - 180, 10)
+        self.renderer.render_to_screen(
+            left_down_corner, 10, self.renderer.height - 50)
+        self.renderer.render_to_screen(
+            right_down_corner, self.renderer.width - 180, self.renderer.height - 50)
 
         if self.physics.collide(self.components['box'], self.components['character']):
-            self.components['box'].image.fill((255,0,0))
+            self.components['box'].image.fill((255, 0, 0))
         else:
-            self.components['box'].image.fill((0,0,255))
+            self.components['box'].image.fill((0, 0, 255))
 
         if len(self.components['character'].paths):
             self.renderer.draw_line(
                 (0, 255, 0), self.renderer.global_to_local_coords(self.components['character'].x,
-                              self.components['character'].y),
+                                                                  self.components['character'].y),
                 self.renderer.global_to_local_coords(self.components['character'].paths[0][0], self.components['character'].paths[0][1]))
             for path in self.components['character'].paths:
                 marker = self.renderer.get_surface(20, 20)
@@ -149,7 +153,8 @@ class Game:
                 self.renderer.render_world_to_screen(marker, path[0], path[1])
 
         for entity in self.entities:
-            self.renderer.render_world_to_screen(entity.image, entity.x, entity.y)
+            self.renderer.render_world_to_screen(
+                entity.image, entity.x, entity.y)
 
             if entity.selected:
                 self.renderer.render_info_to_screen(entity)
@@ -158,14 +163,14 @@ class Game:
         self.clock.update()
         end_time = time.time() - start_time
         true_fps = int(1. / (end_time or 1))
-        fps_text = self.font.render_text(f'FPS: {true_fps}', 'main', (255, 0, 0))
+        fps_text = self.font.render_text(
+            f'FPS: {true_fps}', 'main', (255, 0, 0))
         self.renderer.screen.blit(fps_text, (50, 100))
 
-        #self.cutscene.run()
+        # self.cutscene.run()
 
         if not self.cutscene.status:
             self.clock.fps = 60
-
 
     def pause(self):
         """
@@ -187,10 +192,10 @@ class Game:
                 self.logger.info('Game is Running')
                 self.input_handler.keys_pressed.remove(
                     actions.MAIN_GAME['PAUSE'])
-                
+
         current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         game_text = self.font.render_text(f'Game is paused -> {current_time}',
-                                        'main', (0, 255, 0))
+                                          'main', (0, 255, 0))
         self.renderer.screen.blit(game_text, (50, 50))
 
     def title_screen(self):
@@ -214,8 +219,8 @@ class Game:
             Load components
         """
         self.components['menu'] = Menu(300, 200, ['START', 'OPTIONS', 'QUIT'],
-                                             self.renderer, self.input_handler,
-                                             self.font, self.state)
+                                       self.renderer, self.input_handler,
+                                       self.font, self.state)
         self.components['character'] = Character(
             '1', 'test', 50, 50, self.renderer.get_surface(50, 50),
             self.input_handler)
@@ -244,8 +249,10 @@ class Game:
                 font['key'], f"./game/assets/fonts/{font['file_name']}", 30)
             self.font.create_font(
                 f"{font['key']}_small", f"./game/assets/fonts/{font['file_name']}", 20)
-            font_number = self.font.render_text(f'{index+1} / {total_fonts} loaded!', 'system', (0, 255, 0))
-            font_name = self.font.render_text(font['file_name'], 'system', (0, 255, 0))
+            font_number = self.font.render_text(
+                f'{index+1} / {total_fonts} loaded!', 'system', (0, 255, 0))
+            font_name = self.font.render_text(
+                font['file_name'], 'system', (0, 255, 0))
             self.renderer.render_to_screen(font_number, 50, 50)
             self.renderer.render_to_screen(font_name, 50, 100)
             self.renderer.update()

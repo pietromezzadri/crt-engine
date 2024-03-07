@@ -32,8 +32,8 @@ class Character(BaseEntity):
                 self.y_speed = 0.6
             else:
                 self.x_speed = 0.3
-                self.y_speed = 0.3    
-            
+                self.y_speed = 0.3
+
         if actions.MAIN_GAME['c'] in self.input_handler.keys_pressed:
             self.paths = []
 
@@ -41,10 +41,10 @@ class Character(BaseEntity):
             self.can_move = True
             self.paths.append((self.input_handler.mouse.get_global_x(),
                                self.input_handler.mouse.get_global_y()))
-            
+
         if self.input_handler.mouse.m_left:
-            if self.physics.collide_local_to_global(self.input_handler.mouse, self, \
-                                                    self.input_handler.renderer.x_start, \
+            if self.physics.collide_local_to_global(self.input_handler.mouse, self,
+                                                    self.input_handler.renderer.x_start,
                                                     self.input_handler.renderer.y_start):
                 self.selected = True
             elif actions.MAIN_GAME['shift'] not in self.input_handler.keys_pressed:

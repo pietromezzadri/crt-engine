@@ -12,8 +12,8 @@ class Box(BaseEntity):
 
     def update(self, delta_time):
         if self.input_handler.mouse.m_left:
-            if self.physics.collide_local_to_global(self.input_handler.mouse, self, \
-                                                    self.input_handler.renderer.x_start, \
+            if self.physics.collide_local_to_global(self.input_handler.mouse, self,
+                                                    self.input_handler.renderer.x_start,
                                                     self.input_handler.renderer.y_start):
                 self.selected = True
             else:

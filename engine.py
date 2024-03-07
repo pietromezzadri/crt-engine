@@ -31,7 +31,8 @@ class CrtEngine:
         self.input_handler = InputHandler(self.renderer)
         self.audio = Audio()
         self.clock = Clock()
-        self.game = Game(self.font, self.renderer, self.input_handler, self.clock, self.audio)
+        self.game = Game(self.font, self.renderer,
+                         self.input_handler, self.clock, self.audio)
         self.logger.debug('Finished Loading!')
         self.state = 'running'
         self.fullscreen = False

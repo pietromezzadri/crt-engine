@@ -23,10 +23,10 @@ class Mouse:
 
     def get_y(self):
         return self.y
-    
+
     def get_global_x(self):
         return self.renderer.local_to_global_x(self.x)
-    
+
     def get_global_y(self):
         return self.renderer.local_to_global_y(self.y)
 
@@ -35,6 +35,7 @@ class Mouse:
 
     def update_pressed(self):
         self.m_left, self.m_middle, self.m_right = pygame.mouse.get_pressed()
+
 
 class InputHandler:
     def __init__(self, renderer) -> None:

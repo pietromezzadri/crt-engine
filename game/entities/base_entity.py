@@ -1,5 +1,6 @@
 from utils.format_string import format_field
 
+
 class BaseEntity:
 
     def __init__(self, _id, name, width, height, image, input_handler):
@@ -56,5 +57,6 @@ class BaseEntity:
     def get_info_screen(self):
         text_to_print = []
         for field in self.info_fields:
-            text_to_print.append(f"{field}: {format_field(getattr(self, field))}")
+            text_to_print.append(
+                f"{field}: {format_field(getattr(self, field))}")
         return text_to_print
