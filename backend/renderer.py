@@ -108,6 +108,15 @@ class Renderer:
         """
         return pygame.Surface((width, height))
 
+    def update_pos(self, x, y):
+        """
+            Update Rendered Area
+        """
+        self.x_start = x
+        self.x_end = x + self.width
+        self.y_start = y
+        self.y_end = y + self.height
+
     def update_screen_size(self, width, height):
         """
             Renderer Screen Size function

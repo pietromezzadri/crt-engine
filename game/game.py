@@ -13,6 +13,7 @@ import game.key_actions as actions
 
 import utils.json_handler as json_handler
 from utils.logger import Logger
+from utils.info_screen import InfoScreen
 
 from backend.audio import Audio
 from backend.input_handler import InputHandler
@@ -42,6 +43,9 @@ class Game:
         self.entities = []
         self.physics = Physics()
         self.cutscene = None
+        self.camera = Camera(0, 'main_camera', self.input_handler, self.renderer)
+        self.info_screen = InfoScreen(self.renderer, self.font)
+        self.mode = 'DEBUG'
 
     def load(self) -> int:
         """
@@ -57,7 +61,7 @@ class Game:
         self.cutscene = Cutscene(self.renderer, self.input_handler, self.audio, './game/assets/GTAtitles.mpg',
                                  './game/assets/file.mp3')
 
-        self.clock.fps = self.renderer.get_video_fps(self.cutscene.video)
+        self.clock.set_fps(self.renderer.get_video_fps(self.cutscene.video))
 
         return 1
 
@@ -66,11 +70,6 @@ class Game:
             Game Run function
         """
         start_time = time.time()
-        start_time = time.time()
-        camera_right = False
-        camera_left = False
-        camera_up = False
-        camera_down = False
         self.components['character'].control = True
         if actions.MAIN_GAME['PAUSE'] in self.input_handler.keys_pressed:
             self.state = 'paused'
@@ -80,62 +79,17 @@ class Game:
             self.input_handler.keys_pressed.remove(
                 actions.MAIN_GAME['PAUSE'])
 
-        if not self.components['character'].control:
-            if actions.MAIN_GAME['w'] in self.input_handler.keys_pressed:
-                camera_up = True
-
-            if actions.MAIN_GAME['s'] in self.input_handler.keys_pressed:
-                camera_down = True
-
-            if actions.MAIN_GAME['a'] in self.input_handler.keys_pressed:
-                camera_left = True
-
-            if actions.MAIN_GAME['d'] in self.input_handler.keys_pressed:
-                camera_right = True
-
-        last_x = self.components['character'].x
-        last_y = self.components['character'].y
         for entity in self.entities:
             entity.update(self.clock.delta_time())
 
-        cam_x = self.components['character'].x - last_x
-        cam_y = self.components['character'].y - last_y
+        self.camera.goto(self.components['character'].x - self.renderer.width/2,
+                        self.components['character'].y - self.renderer.height/2)
 
-        if camera_right or self.renderer.x_end - self.components['character'].x < 300:
-            self.renderer.x_start += 5
-            self.renderer.x_end += 5
-
-        elif camera_left or self.components['character'].x - self.renderer.x_start < 300:
-            self.renderer.x_start -= 5
-            self.renderer.x_end -= 5
-
-        if camera_up or self.components['character'].y - self.renderer.y_start < 300:
-            self.renderer.y_start -= 5
-            self.renderer.y_end -= 5
-
-        if camera_down or self.renderer.y_end - self.components['character'].y < 300:
-            self.renderer.y_start += 5
-            self.renderer.y_end += 5
 
         # GAME LOOP
         self.renderer.clear_screen((0, 0, 0))
 
-        left_up_corner = self.font.render_text(
-            f"({self.renderer.x_start}, {self.renderer.y_start})", 'main', (150, 50, 50))
-        right_up_corner = self.font.render_text(
-            f"({self.renderer.x_end}, {self.renderer.y_start})", 'main', (150, 50, 50))
-        left_down_corner = self.font.render_text(
-            f"({self.renderer.x_start}, {self.renderer.y_end})", 'main', (150, 50, 50))
-        right_down_corner = self.font.render_text(
-            f"({self.renderer.x_end}, {self.renderer.y_end})", 'main', (150, 50, 50))
 
-        self.renderer.render_to_screen(left_up_corner, 10, 10)
-        self.renderer.render_to_screen(
-            right_up_corner, self.renderer.width - 180, 10)
-        self.renderer.render_to_screen(
-            left_down_corner, 10, self.renderer.height - 50)
-        self.renderer.render_to_screen(
-            right_down_corner, self.renderer.width - 180, self.renderer.height - 50)
 
         if self.physics.collide(self.components['box'], self.components['character']):
             self.components['box'].image.fill((255, 0, 0))
@@ -163,9 +117,9 @@ class Game:
         self.clock.update()
         end_time = time.time() - start_time
         true_fps = int(1. / (end_time or 1))
-        fps_text = self.font.render_text(
-            f'FPS: {true_fps}', 'main', (255, 0, 0))
-        self.renderer.screen.blit(fps_text, (50, 100))
+        
+        if self.mode == 'DEBUG':
+            self.info_screen.display_info(true_fps)
 
         # self.cutscene.run()
 

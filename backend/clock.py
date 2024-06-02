@@ -8,6 +8,9 @@ class Clock:
         self.v_sync = True
         self.fps = 60
 
+    def set_fps(self, fps):
+        self.fps = fps
+
     def delta_time(self):
         return self.clock.get_time()
 

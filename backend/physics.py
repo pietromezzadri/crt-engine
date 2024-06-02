@@ -22,7 +22,7 @@ class Physics:
         rect2 = Rect(x2, y2, w2, h2)
         return rect1.colliderect(rect2)
 
-    def collide_list(self, entity, entity_list) -> list:
+    def collide_list(self, entity, entity_list):
         rect1 = Rect(entity.x, entity.y, entity.width, entity.height)
         rect_list = []
         for ent in entity_list:

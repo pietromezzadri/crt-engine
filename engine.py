@@ -59,7 +59,7 @@ class CrtEngine:
         self.renderer.end()
         self.logger.debug('Ending program')
 
-    def load(self) -> int:
+    def load(self):
         """
             Engine  load function
         """
@@ -70,3 +70,5 @@ class CrtEngine:
                 self.game.state = 'title screen'
             else:
                 self.logger.debug('Unable to load Engine')
+
+
