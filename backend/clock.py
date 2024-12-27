@@ -2,7 +2,6 @@ import pygame
 
 
 class Clock:
-
     def __init__(self) -> None:
         self.clock = pygame.time.Clock()
         self.v_sync = True

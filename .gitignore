@@ -7,3 +7,4 @@ venv/*
 .vscode/*
 logs/*
 /game/assets
+.DS_Store

@@ -1,7 +1,7 @@
+"""
+PRESETS for unix terminal
+"""
 
-"""
-    PRESETS for unix terminal
-"""
 import logging
 
 
@@ -27,7 +27,7 @@ RESET = "\x1b[0m"
 
 class Logger:
     """
-        Class Responsible for Logging
+    Class Responsible for Logging
     """
 
     def __init__(self, name, logfile=False, console=False):
@@ -37,27 +37,27 @@ class Logger:
 
     def debug(self, msg):
         """
-            Debug logger
+        Debug logger
         """
         logging.root.handlers = []
 
         handlers = []
 
         print_log = False
-        
+
         if self.logfile:
             handlers.append(logging.FileHandler("logs/debug.log"))
             print_log = True
-        
+
         if self.console:
             handlers.append(logging.StreamHandler())
             print_log = True
-        
+
         logging.basicConfig(
             level=logging.DEBUG,
             format=f"{MAGENTA}{self.name:<15}{RESET} {BLUE_BG}[%(levelname)s]{RESET} \
                 {'':<3} {YELLOW}%(message)s{RESET} %(asctime)s",
-            handlers=handlers
+            handlers=handlers,
         )
 
         if print_log:
@@ -65,18 +65,18 @@ class Logger:
 
     def info(self, msg):
         """
-            Info logger
+        Info logger
         """
         logging.root.handlers = []
 
         handlers = []
 
         print_log = False
-        
+
         if self.logfile:
             handlers.append(logging.FileHandler("logs/debug.log"))
             print_log = True
-        
+
         if self.console:
             handlers.append(logging.StreamHandler())
             print_log = True
@@ -85,7 +85,7 @@ class Logger:
             level=logging.INFO,
             format=f"{MAGENTA}{self.name:<15}{RESET} {GREY_BG}[%(levelname)s]{RESET} \
                 {'':<4} {YELLOW}%(message)s{RESET} %(asctime)s",
-            handlers=handlers
+            handlers=handlers,
         )
 
         if print_log:
@@ -93,18 +93,18 @@ class Logger:
 
     def warning(self, msg):
         """
-            Warning logger
+        Warning logger
         """
         logging.root.handlers = []
 
         handlers = []
 
         print_log = False
-        
+
         if self.logfile:
             handlers.append(logging.FileHandler("logs/debug.log"))
             print_log = True
-        
+
         if self.console:
             handlers.append(logging.StreamHandler())
             print_log = True
@@ -113,7 +113,7 @@ class Logger:
             level=logging.WARNING,
             format=f"{MAGENTA}{self.name:<15}{RESET} {YELLOW_BG}[%(levelname)s]{RESET} \
                 {'':<3} {YELLOW}%(message)s{RESET} %(asctime)s",
-            handlers=handlers
+            handlers=handlers,
         )
 
         if print_log:
@@ -121,18 +121,18 @@ class Logger:
 
     def error(self, msg):
         """
-            ERROR logger
+        ERROR logger
         """
         logging.root.handlers = []
 
         handlers = []
 
         print_log = False
-        
+
         if self.logfile:
             handlers.append(logging.FileHandler("logs/debug.log"))
             print_log = True
-        
+
         if self.console:
             handlers.append(logging.StreamHandler())
             print_log = True
@@ -141,7 +141,7 @@ class Logger:
             level=logging.ERROR,
             format=f"{MAGENTA}{self.name:<15}{RESET} {RED_BG}[%(levelname)s]{RESET} \
                 {'':<3} {YELLOW}%(message)s{RESET} %(asctime)s",
-            handlers=handlers
+            handlers=handlers,
         )
 
         if print_log:

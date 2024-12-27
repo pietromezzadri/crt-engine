@@ -10,11 +10,18 @@ class Physics:
         rect2 = Rect(entity2.x, entity2.y, entity2.width, entity2.height)
         return rect1.colliderect(rect2)
 
-    def collide_local_to_global(self, localEntity, globalEntity, x_offset, y_offset) -> bool:
-        rect1 = Rect(localEntity.x + x_offset, localEntity.y +
-                     y_offset, localEntity.width, localEntity.height)
-        rect2 = Rect(globalEntity.x, globalEntity.y,
-                     globalEntity.width, globalEntity.height)
+    def collide_local_to_global(
+        self, localEntity, globalEntity, x_offset, y_offset
+    ) -> bool:
+        rect1 = Rect(
+            localEntity.x + x_offset,
+            localEntity.y + y_offset,
+            localEntity.width,
+            localEntity.height,
+        )
+        rect2 = Rect(
+            globalEntity.x, globalEntity.y, globalEntity.width, globalEntity.height
+        )
         return rect1.colliderect(rect2)
 
     def collide_obj(self, x1, y1, w1, h1, x2, y2, w2, h2):

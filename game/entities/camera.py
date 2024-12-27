@@ -1,5 +1,4 @@
-class Camera():
-
+class Camera:
     def __init__(self, _id, name, input_handler, renderer):
         self._id = _id
         self.name = name
