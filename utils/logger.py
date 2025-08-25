@@ -2,7 +2,7 @@
 """
     PRESETS for unix terminal
 """
-import logging
+import logging, os
 
 
 GREY_BG = "\x1b[30;47m"
@@ -34,6 +34,12 @@ class Logger:
         self.name = name
         self.logfile = logfile
         self.console = console
+        root_folder = os.getcwd()
+        log_dir = f"{root_folder}/logs"
+        if not os.path.exists(f"{log_dir}"):
+            os.makedirs(log_dir, exist_ok=True)
+            f = open(f"{log_dir}/debug.log", "w")
+            f.close()
 
     def debug(self, msg):
         """
