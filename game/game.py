@@ -5,17 +5,13 @@ Game
 import datetime
 import time
 
-from game.entities.box import Box
-from game.entities.character import Character
 from game.entities.camera import Camera
-from game.components.core.menu import Menu
-from game.events.cutscene import Cutscene
 import game.key_actions as actions
 
 import utils.json_handler as json_handler
 from utils.logger import Logger
 from utils.info_screen import InfoScreen
-from utils.shared import GameState
+from utils.shared import GameState, GameMode
 
 from backend.audio import Audio
 from backend.input_handler import InputHandler
@@ -34,21 +30,17 @@ class Game:
         self.logger = Logger("game", False, True)
         self.name = "Game Test"
         self.version = "0.0.1-alpha"
-        self.state = "title screen"
+        self.state = GameState.TITLE_SCREEN
         self.font: Font = font
         self.renderer: Renderer = renderer
         self.input_handler: InputHandler = input_handler
         self.audio: Audio = audio
         self.clock: Clock = clock
         self.selected = 0
-        self.components = {}
-        self.entities = []
         self.physics = Physics()
-        self.cutscene = None
-        self.camera = Camera(0, "main_camera", self.input_handler, self.renderer)
-        self.info_screen = InfoScreen(self.renderer, self.font)
-        self.mode = "DEBUG"
-        self.game_state = GameState.TITLE_SCREEN
+        self.camera = Camera(0, "main_camera")
+        self.info_screen = InfoScreen()
+        self.mode = GameMode.DEBUG
 
     def load(self) -> int:
         """
@@ -60,11 +52,6 @@ class Game:
         self.logger.debug("loading components")
         self.load_components()
         self.logger.debug("finished loading components")
-
-        # self.cutscene = Cutscene(self.renderer, self.input_handler, self.audio, './game/assets/GTAtitles.mpg',
-        #                         './game/assets/file.mp3')
-
-        # self.clock.set_fps(self.renderer.get_video_fps(self.cutscene.video))
 
         return 1
 
@@ -177,27 +164,7 @@ class Game:
         """
         Load components
         """
-        self.components["menu"] = Menu(
-            300,
-            200,
-            ["START", "OPTIONS", "QUIT"],
-            self.renderer,
-            self.input_handler,
-            self.font,
-            self.state,
-        )
-        self.components["character"] = Character(
-            "1", "test", 50, 50, self.renderer.get_surface(50, 50), self.input_handler
-        )
-        self.components["character"].image.fill((0, 0, 255))
-        self.components["box"] = Box(
-            "2", "box", 20, 20, self.renderer.get_surface(20, 20), self.input_handler
-        )
-        self.components["box"].image.fill((0, 20, 180))
-        self.components["box"].x = 300
-        self.components["box"].y = 300
-        self.entities.append(self.components["character"])
-        self.entities.append(self.components["box"])
+        pass
 
     def load_fonts(self):
         """
@@ -222,7 +189,7 @@ class Game:
             self.renderer.render_to_screen(font_number, 50, 50)
             self.renderer.render_to_screen(font_name, 50, 100)
             self.renderer.update()
-            self.clock.delay(200)
+            self.clock.delay(1000)
 
     def end(self):
         """

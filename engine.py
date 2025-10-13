@@ -7,8 +7,9 @@ from backend.input_handler import InputHandler
 from backend.font import Font
 from backend.renderer import Renderer
 from backend.audio import Audio
-from game.game import Game, GameState
+from game.game import Game
 from utils.logger import Logger
+from utils.shared import EngineState, GameState
 
 
 class CrtEngine:
@@ -22,37 +23,35 @@ class CrtEngine:
         self.logger = Logger("main-engine", False, True)
         self.logger.debug("Starting program")
         self.logger.debug("Loading resources...")
-        self.state = "loading"
+        self.state = EngineState.LOADING
         self.font = Font(30)
         self.renderer = Renderer(f"{self.name} - v.{self.version}", self.font)
-        self.icon = self.renderer.load_image("./assets/icon.jpg")
-        self.renderer.set_icon(self.icon)
-        self.input_handler = InputHandler(self.renderer)
+        self.input_handler = InputHandler()
         self.audio = Audio()
         self.clock = Clock()
         self.game = Game(
             self.font, self.renderer, self.input_handler, self.clock, self.audio
         )
         self.logger.debug("Finished Loading!")
-        self.state = "running"
+        self.state = EngineState.RUNNING
         self.fullscreen = False
 
     def run(self) -> None:
         """
         Engine  main loop
         """
-        while self.state == "running":
+        while self.state == EngineState.RUNNING:
             if not self.input_handler.event_handler():
                 self.renderer.end()
                 break
             self.game.current_state
-            if self.game.state == "title screen":
+            if self.game.state == GameState.TITLE_SCREEN:
                 self.game.title_screen()
-            if self.game.state == "running":
+            if self.game.state == GameState.RUNNING:
                 self.game.run()
-            if self.game.state == "paused":
+            if self.game.state == GameState.PAUSED:
                 self.game.pause()
-            if self.game.state == "end":
+            if self.game.state == GameState.END:
                 self.game.end()
                 self.renderer.end()
                 break

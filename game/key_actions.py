@@ -2,20 +2,25 @@
     Game Actions Keys
 """
 from pygame import constants
+from enum import Enum
 
-MAIN_GAME = {
-    'START': constants.K_p,
-    'PAUSE': constants.K_ESCAPE,
-    'DOWN': constants.K_DOWN,
-    'UP': constants.K_UP,
-    'RIGHT': constants.K_RIGHT,
-    'LEFT': constants.K_LEFT,
-    'ENTER': constants.K_RETURN,
-    'w': constants.K_w,
-    'a': constants.K_a,
-    's': constants.K_s,
-    'd': constants.K_d,
-    'c': constants.K_c,
-    'skip': constants.K_x,
-    'shift': constants.K_LSHIFT,
-}
+
+class MenuAction(Enum):
+    START = constants.K_p
+    PAUSE = constants.K_ESCAPE
+
+
+class MainGameAction(Enum):
+    PAUSE = constants.K_ESCAPE
+    DOWN = [constants.K_DOWN, constants.K_s]
+    UP = [constants.K_UP, constants.K_w]
+    RIGHT = [constants.K_RIGHT, constants.K_d]
+    LEFT = [constants.K_LEFT, constants.K_a]
+
+
+class CutsceneAction(Enum):
+    SKIP = constants.K_x
+
+
+class EntityAction(Enum):
+    RUN = constants.K_LSHIFT

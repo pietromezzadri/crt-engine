@@ -24,7 +24,7 @@ dependencies = [
     "pyinstaller-hooks-contrib==2023.0",
     "pywin32-ctypes==0.2.0",
     "requests==2.31.0",
-    "ruff==0.0.282",
+    "ruff==0.0.291",
     "tomli==2.0.1",
     "tqdm==4.66.1",
     "urllib3==2.0.5",

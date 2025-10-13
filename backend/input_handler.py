@@ -1,11 +1,10 @@
 import pygame
 from pygame import constants
 from utils.logger import Logger
-from backend.renderer import Renderer
 
 
 class Mouse:
-    def __init__(self, renderer) -> None:
+    def __init__(self) -> None:
         self.x = 0
         self.y = 0
         self.width = 50
@@ -13,7 +12,6 @@ class Mouse:
         self.m_left = False
         self.m_right = False
         self.m_middle = False
-        self.renderer: Renderer = renderer
 
     def get_pos(self):
         return self.x, self.y
@@ -24,12 +22,6 @@ class Mouse:
     def get_y(self):
         return self.y
 
-    def get_global_x(self):
-        return self.renderer.local_to_global_x(self.x)
-
-    def get_global_y(self):
-        return self.renderer.local_to_global_y(self.y)
-
     def update_pos(self):
         self.x, self.y = pygame.mouse.get_pos()
 
@@ -38,12 +30,11 @@ class Mouse:
 
 
 class InputHandler:
-    def __init__(self, renderer) -> None:
-        self.logger = Logger('input-handler', False, True)
-        self.renderer: Renderer = renderer
+    def __init__(self) -> None:
+        self.logger = Logger("input-handler", False, True)
         self.keys_pressed: list = []
-        self.logger.debug('InputHandler loaded!')
-        self.mouse: Mouse = Mouse(self.renderer)
+        self.logger.debug("InputHandler loaded!")
+        self.mouse: Mouse = Mouse()
 
     def event_handler(self) -> int:
         self.mouse.update_pos()
