@@ -1,11 +1,15 @@
 import pygame
 
+
 class Audio:
     def __init__(self) -> None:
         pygame.mixer.init()
         self.num_channels = 8
         self.playing = False
         self.paused = False
+
+    def load_sound_effect(self, filename):
+        return pygame.mixer.Sound(filename)
 
     def load_music_file(self, file_name):
         pygame.mixer.music.load(file_name)

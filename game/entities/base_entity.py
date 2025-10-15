@@ -6,9 +6,8 @@ class BaseEntity:
         self._id = _id
         self.name = name
         self.x = 0
-        self.x_speed = 0.3
         self.y = 0
-        self.y_speed = 0.3
+        self.speed = 0.3
         self.width = width
         self.height = height
         self.image = image

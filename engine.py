@@ -44,14 +44,15 @@ class CrtEngine:
             if not self.input_handler.event_handler():
                 self.renderer.end()
                 break
-            self.game.current_state
-            if self.game.state == GameState.TITLE_SCREEN:
+            elif self.game.state == GameState.TITLE_SCREEN:
                 self.game.title_screen()
-            if self.game.state == GameState.RUNNING:
+            if self.game.state == GameState.SETTINGS:
+                self.game.settings()
+            elif self.game.state == GameState.RUNNING:
                 self.game.run()
-            if self.game.state == GameState.PAUSED:
+            elif self.game.state == GameState.PAUSED:
                 self.game.pause()
-            if self.game.state == GameState.END:
+            elif self.game.state == GameState.END:
                 self.game.end()
                 self.renderer.end()
                 break
@@ -67,6 +68,6 @@ class CrtEngine:
             self.logger.debug("Start Loading Game...")
             if self.game.load():
                 self.logger.debug("Finished Loading Game...")
-                self.game.state = "title screen"
+                self.game.state = GameState.TITLE_SCREEN
             else:
                 self.logger.debug("Unable to load Engine")

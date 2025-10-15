@@ -6,12 +6,15 @@ class GameState(Enum):
     RUNNING = "RUNNING"
     PAUSED = "PAUSED"
     TITLE_SCREEN = "TITLE_SCREEN"
+    SETTINGS = "SETTINGS"
     END = "END"
+
 
 class EngineState(Enum):
     LOADING = "LOADING"
     RUNNING = "RUNNING"
     END = "END"
+
 
 class GameMode(Enum):
     DEBUG = "DEBUG"

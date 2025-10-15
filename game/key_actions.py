@@ -8,14 +8,29 @@ from enum import Enum
 class MenuAction(Enum):
     START = constants.K_p
     PAUSE = constants.K_ESCAPE
+    SELECT = constants.K_RETURN
+    DOWN = constants.K_DOWN
+    UP = constants.K_UP
+    RIGHT = constants.K_RIGHT
+    LEFT = constants.K_LEFT
 
 
 class MainGameAction(Enum):
     PAUSE = constants.K_ESCAPE
-    DOWN = [constants.K_DOWN, constants.K_s]
-    UP = [constants.K_UP, constants.K_w]
-    RIGHT = [constants.K_RIGHT, constants.K_d]
-    LEFT = [constants.K_LEFT, constants.K_a]
+    DOWN = constants.K_DOWN
+    UP = constants.K_UP
+    RIGHT = constants.K_RIGHT
+    LEFT = constants.K_LEFT
+    ZOOM_IN = constants.K_z
+    ZOOM_OUT = constants.K_x
+
+
+class CameraAction(Enum):
+    DOWN = constants.K_s
+    UP = constants.K_w
+    RIGHT = constants.K_d
+    LEFT = constants.K_a
+    FIND = constants.K_f
 
 
 class CutsceneAction(Enum):
