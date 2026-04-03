@@ -7,14 +7,32 @@ import time
 
 from game.entities.camera import Camera
 import game.key_actions as actions
+<<<<<<< Updated upstream
 from game.components.core.menu import MainMenu, SettingsMenu
 from game.structures.map import Map
+=======
+from game.components.core.menu import Menu
+from game.components.core.button import Button
+from game.events.event_handler import EventHandler
+>>>>>>> Stashed changes
 
 import utils.json_handler as json_handler
 from utils.logger import Logger
 from utils.info_screen import InfoScreen
+<<<<<<< Updated upstream
 from utils.shared import GameState, GameMode
 from utils.i18n.menu import MainMenuOptions, ConfigMenuOptions
+=======
+from utils.shared import (
+    GameState,
+    GameMode,
+    ButtonState,
+    GameEvents,
+    ConfigMode,
+    MenuType,
+    UI,
+)
+>>>>>>> Stashed changes
 
 from backend.audio import Audio
 from backend.input_handler import InputHandler
@@ -43,12 +61,15 @@ class Game:
         self.physics = Physics()
         self.camera = Camera(0, "main_camera")
         self.ui_components = {}
+<<<<<<< Updated upstream
         self.entities = {}
         self.sounds = {}
         self.map = None
         self.tile_size = 100
         self.x = 3
         self.y = 1
+=======
+>>>>>>> Stashed changes
         # self.info_screen = InfoScreen()
         self.mode = GameMode.DEBUG
 
@@ -60,11 +81,15 @@ class Game:
         self.load_fonts()
         self.logger.debug("finished loading fonts")
         self.logger.debug("loading components")
-        self.load_components()
+        self.load_ui_components()
         self.logger.debug("finished loading components")
+<<<<<<< Updated upstream
         self.logger.debug("loading sounds")
         self.load_sounds()
         self.logger.debug("finished loading sounds")
+=======
+        self.event_handler = EventHandler()
+>>>>>>> Stashed changes
 
         return 1
 
@@ -74,6 +99,7 @@ class Game:
         """
         start_time = time.time()
         self.renderer.clear_screen((0, 0, 0))
+<<<<<<< Updated upstream
         mouse_x, mouse_y = self.input_handler.mouse.get_pos()
         w_mouse_x, w_mouse_y = self.renderer.local_to_global_coords(mouse_x, mouse_y)
         w_x = int(w_mouse_x / self.tile_size) * self.tile_size
@@ -82,6 +108,10 @@ class Game:
         cy = int(w_mouse_y / self.tile_size)
         tc = self.map.get_chunk(cx, cy)
         tp = self.map.get_pos(cx, cy)
+=======
+        for event in self.event_handler.events:
+            self.event_handler.run_events()
+>>>>>>> Stashed changes
 
         if self.input_handler.mouse.m_left:
             self.map.terrain_chunks[f"{tc[0]}x{tc[1]}"][tp[1]][tp[0]] = 1
@@ -259,6 +289,7 @@ class Game:
         """
         Game Title Screen
         """
+<<<<<<< Updated upstream
         current_index = self.ui_components["main_menu"].selected
         if actions.MenuAction.DOWN.value in self.input_handler.keys_pressed:
             if current_index + 1 >= len(self.ui_components["main_menu"].options):
@@ -357,11 +388,106 @@ class Game:
             self.input_handler.keys_pressed.remove(actions.MenuAction.SELECT.value)
         if self.ui_components["settings_menu"].active:
             self.renderer.render_settings(self.ui_components["settings_menu"])
+=======
+        self.renderer.clear_screen((0, 0, 0))
+        if actions.Menu.PAUSE.value in self.input_handler.keys_pressed:
+            if self.ui_components[UI.MAIN_MENU].active:
+                print(self.input_handler.keys_pressed)
+                self.state = GameState.END
+                print(self.state)
+                self.input_handler.keys_pressed.remove(actions.Menu.PAUSE.value)
+            elif self.ui_components[UI.CONFIG_MENU].active:
+                self.ui_components[UI.CONFIG_MENU].active = False
+                self.ui_components[UI.MAIN_MENU].active = True
+                self.input_handler.keys_pressed.remove(actions.Menu.PAUSE.value)
 
-    def load_components(self):
+        for events in self.event_handler.events:
+            if self.event_handler.run_event() == ConfigMode.GRAPHICS_CONFIG:
+                self.ui_components[UI.MAIN_MENU].active = False
+                self.ui_components[UI.CONFIG_MENU].active = True
+                self.event_handler.remove_event()
+            elif self.event_handler.run_event() == ConfigMode.CHANGE_RESOLUTION:
+                self.ui_components[UI.CONFIG_MENU].submenus[1].active = True
+                self.event_handler.remove_event()
+>>>>>>> Stashed changes
+
+        if (
+            len(
+                list(
+                    set(actions.Menu.DOWN.value) & set(self.input_handler.keys_pressed)
+                )
+            )
+            > 0
+        ):
+            if self.ui_components[UI.MAIN_MENU].active:
+                for index, button in enumerate(
+                    self.ui_components[UI.MAIN_MENU].submenus
+                ):
+                    if button.selected:
+                        button.selected = False
+                        if index + 1 >= len(self.ui_components[UI.MAIN_MENU].submenus):
+                            self.ui_components[UI.MAIN_MENU].submenus[0].selected = True
+                        else:
+                            self.ui_components[UI.MAIN_MENU].submenus[
+                                index + 1
+                            ].selected = True
+                        break
+                pressed_key = list(
+                    set(actions.Menu.DOWN.value) & set(self.input_handler.keys_pressed)
+                )
+                self.input_handler.keys_pressed.remove(pressed_key[0])
+
+        if (
+            len(list(set(actions.Menu.UP.value) & set(self.input_handler.keys_pressed)))
+            > 0
+        ):
+            if self.ui_components[UI.MAIN_MENU].active:
+                for index, button in enumerate(
+                    self.ui_components[UI.MAIN_MENU].submenus
+                ):
+                    if button.selected:
+                        button.selected = False
+                        if index + 1 >= len(self.ui_components[UI.MAIN_MENU].submenus):
+                            self.ui_components[UI.MAIN_MENU].submenus[0].selected = True
+                        else:
+                            self.ui_components[UI.MAIN_MENU].submenus[
+                                index + 1
+                            ].selected = True
+                        break
+                pressed_key = list(
+                    set(actions.Menu.UP.value) & set(self.input_handler.keys_pressed)
+                )
+                self.input_handler.keys_pressed.remove(pressed_key[0])
+        if actions.Menu.SELECT.value in self.input_handler.keys_pressed:
+            if self.ui_components[UI.MAIN_MENU].active:
+                for index, button in enumerate(
+                    self.ui_components[UI.MAIN_MENU].submenus
+                ):
+                    if button.selected:
+                        self.event_handler.add_event(button.event_id)
+            elif self.ui_components[UI.CONFIG_MENU].active:
+                for index, button in enumerate(
+                    self.ui_components[UI.CONFIG_MENU].submenus
+                ):
+                    try:
+                        print(button.label, " ", button.selected)
+                        if button.selected:
+                            print(button.event_id)
+                            self.event_handler.add_event(button.event_id)
+                    except AttributeError:
+                        pass
+            self.input_handler.keys_pressed.remove(actions.Menu.SELECT.value)
+
+        if self.ui_components[UI.MAIN_MENU].active:
+            self.renderer.render_menu(self.ui_components[UI.MAIN_MENU])
+        elif self.ui_components[UI.CONFIG_MENU].active:
+            self.renderer.render_menu(self.ui_components[UI.CONFIG_MENU])
+
+    def load_ui_components(self):
         """
         Load components
         """
+<<<<<<< Updated upstream
         main_menu = MainMenu()
         settings_menu = SettingsMenu()
         settings_menu.res_options = self.renderer.get_res_list()
@@ -370,6 +496,53 @@ class Game:
         self.map = Map(1, "main")
         self.map.load_map_data()
         self.map.create_chunks()
+=======
+        main_menu = Menu(UI.MAIN_MENU, MenuType.STANDARD_V)
+        main_menu.label = "MAIN MENU"
+
+        config_menu = Menu(UI.CONFIG_MENU, MenuType.STANDARD_V)
+        main_menu.label = "CONFIGURATION"
+
+        start_button = Button(
+            1, ButtonState.ACTIVE, GameEvents.START_GAME, "START GAME"
+        )
+        config_button = Button(
+            2, ButtonState.ACTIVE, ConfigMode.GRAPHICS_CONFIG, "CHANGE RESOLUTION"
+        )
+
+        change_res_button = Button(
+            1, ButtonState.ACTIVE, ConfigMode.CHANGE_RESOLUTION, "CHANGE RESOLUTION"
+        )
+
+        change_res_button.selected = True
+
+        start_button.selected = True
+        main_menu.AppendItem(start_button)
+        main_menu.AppendItem(config_button)
+        main_menu.active = True
+
+        resolution_list = self.renderer.get_resolution_list()
+
+        res_menu = Menu(2, MenuType.STANDARD_V)
+        res_menu.active = False
+
+        for index, res in enumerate(resolution_list):
+            res_menu.AppendItem(
+                Button(
+                    index,
+                    ButtonState.ACTIVE,
+                    ConfigMode.SELECT_RESOLUTION,
+                    f"{res[0]}x{res[1]}",
+                )
+            )
+
+        config_menu.AppendItem(change_res_button)
+        config_menu.AppendItem(res_menu)
+        config_menu.active = False
+
+        self.ui_components[UI.MAIN_MENU] = main_menu
+        self.ui_components[UI.CONFIG_MENU] = config_menu
+>>>>>>> Stashed changes
 
     def load_fonts(self):
         """
@@ -394,6 +567,7 @@ class Game:
             self.renderer.render_to_screen(font_number, 50, 50)
             self.renderer.render_to_screen(font_name, 50, 100)
             self.renderer.update()
+<<<<<<< Updated upstream
             # self.clock.delay(1000)
 
     def load_sounds(self):
@@ -401,6 +575,9 @@ class Game:
         self.sounds["grass"] = grass_sound
         wood_sound = self.audio.load_sound_effect("./game/assets/wood.mp3")
         self.sounds["wood"] = wood_sound
+=======
+            self.clock.delay(200)
+>>>>>>> Stashed changes
 
     def end(self):
         """

@@ -6,8 +6,14 @@ import cv2
 from pygame import constants
 from utils.logger import Logger
 from backend.font import Font
+<<<<<<< Updated upstream
 from game.components.core.menu import MainMenu, SettingsMenu
 from game.structures.map import Map
+=======
+from utils.shared import MenuType, ButtonState, UI
+from game.components.core.menu import Menu
+from game.components.core.button import Button
+>>>>>>> Stashed changes
 
 
 class Renderer:
@@ -265,6 +271,36 @@ class Renderer:
 
     def get_video_fps(self, video):
         return video.get(cv2.CAP_PROP_FPS)
+
+    def get_resolution_list(self):
+        return pygame.display.list_modes()
+
+    def render_menu(self, menu: Menu):
+        if menu._id == UI.CONFIG_MENU:
+            title = self.font.render_text("Display Settings", "main", (255, 0, 0))
+            current_res = self.font.render_text(
+                f"Current Resolution: {self.width} x {self.height}", "main", (255, 0, 0)
+            )
+            choose_button = self.font.render_text(
+                menu.submenus[0].label, "main", (0, 255, 0)
+            )
+            self.render_to_screen(title, 100, 100)
+            self.render_to_screen(current_res, 100, 150)
+            self.render_to_screen(choose_button, 100, 200)
+            if menu.submenus[1].active:
+                for index, res in enumerate(menu.submenus[1].submenus):
+                    res_text = self.font.render_text(res.label, "main", (255, 0, 0))
+                    self.render_to_screen(res_text, 100, 250 + index * 50)
+
+        elif menu.type == MenuType.STANDARD_V:
+            init_y = 50
+            for index, item in enumerate(menu.submenus):
+                if item.selected:
+                    item_color = (0, 255, 0)
+                else:
+                    item_color = (255, 0, 0)
+                item_label = self.font.render_text(item.label, "main", item_color)
+                self.render_to_screen(item_label, 100, 100 + init_y * index)
 
     def clear_screen(self, color):
         """

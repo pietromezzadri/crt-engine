@@ -44,7 +44,11 @@ class CrtEngine:
             if not self.input_handler.event_handler():
                 self.renderer.end()
                 break
+<<<<<<< Updated upstream
             elif self.game.state == GameState.TITLE_SCREEN:
+=======
+            if self.game.state == GameState.TITLE_SCREEN:
+>>>>>>> Stashed changes
                 self.game.title_screen()
             if self.game.state == GameState.SETTINGS:
                 self.game.settings()
@@ -55,6 +59,7 @@ class CrtEngine:
             elif self.game.state == GameState.END:
                 self.game.end()
                 self.renderer.end()
+                self.state = EngineState.END
                 break
             self.renderer.update()
         self.renderer.end()

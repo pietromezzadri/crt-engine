@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 from utils.i18n.menu import MainMenuOptions, ConfigMenuOptions
 
 
@@ -20,3 +21,20 @@ class SettingsMenu:
         self.res_options = []
         self.res_selected = 0
         self.display_res_list = False
+=======
+class Menu:
+    def __init__(self, menu_id, menu_type):
+        self._id = menu_id
+        self.submenus = []
+        self.language = ""
+        self.active = False
+        self.type = menu_type
+        self.label = ""
+
+    def AppendItem(self, item):
+        self.submenus.append(item)
+
+    def AppendItems(self, items):
+        for item in items:
+            self.submenus.append(item)
+>>>>>>> Stashed changes
